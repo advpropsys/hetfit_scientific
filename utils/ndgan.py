@@ -99,5 +99,5 @@ class DCGAN():
         self.train_gan(self.generator_model, self.discriminator_model, self.gan_model, self.latent)
         
     def predict(self,n):
-        x_fake, y_fake = self.generate_fake_samples(self.generator, self.latent_dim, n)
-        return x_fake, y_fake
+        x_fake, y_fake = self.generate_fake_samples(self.generator_model, self.latent, n)
+        return x_fake
