@@ -1,4 +1,5 @@
-from data_augmentation import dataset
+import os
+from utils.data_augmentation import dataset
 import os
 import _pickle
 import pandas as pd
@@ -17,7 +18,7 @@ def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl') ->
     Returns:
         _pickle: pickle buffer
     """
-    
+    print(os.listdir('./data'))
     if not(raw):
         if name not in os.listdir('./data'):
             ldat = dataset(sample_size,name)
@@ -29,4 +30,3 @@ def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl') ->
             buffer = pd.read_csv(input_file)
     return buffer
 
-print(get_dataset(name='test.pkl'))

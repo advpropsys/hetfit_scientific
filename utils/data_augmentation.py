@@ -6,7 +6,7 @@ from keras.layers import Input,Dense
 from keras.models import Model
 from sklearn.model_selection import train_test_split
 
-from ndgan import DCGAN 
+from utils.ndgan import DCGAN 
 
 np.random.seed(4269)
 
