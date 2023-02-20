@@ -21,6 +21,10 @@ class dense():
         self.epochs = epochs
         self.len_idx = 0
         
+    def feature_gen(self, fname:str=None,index:int=None,func=None) -> None:
+        
+        self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
+        
     def data_flow(self,columns_idx:tuple = (1,3,3,5), idx:tuple=None, split_idx:int = 800) -> torch.utils.data.DataLoader:
         """ Data prep pipeline
 
@@ -32,11 +36,14 @@ class dense():
         Returns:
             torch.utils.data.DataLoader: Torch native dataloader
         """
+        batch_size=2
+        
         if idx!=None:
             self.len_idx = len(idx)
             if len(idx)==2:
-                self.X = tensor(self.df.iloc[:,idx[0]].values[:split_idx,:]).float()
+                self.X = tensor(self.df.iloc[:,idx[0]].values[:split_idx]).float()
                 self.Y = tensor(self.df.iloc[:,idx[1]].values[:split_idx]).float()
+                batch_size = 1
             else:
                 self.X = tensor(self.df.iloc[:,[idx[0],idx[1]]].values[:split_idx,:]).float()
                 self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx]).float()
@@ -45,7 +52,7 @@ class dense():
             self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx]).float()
         print('Shapes for debug: (X,Y)',self.X.shape, self.Y.shape)
         train_data = torch.utils.data.TensorDataset(self.X, self.Y)
-        Xtrain = torch.utils.data.DataLoader(train_data,batch_size=2)
+        Xtrain = torch.utils.data.DataLoader(train_data,batch_size=batch_size)
         self.input_dim = self.X.size(-1)
         self.indexes = idx if idx else columns_idx
         self.column_names = [ self.df.columns[i] for i in self.indexes ]
@@ -99,13 +106,17 @@ class dense():
             self.Xtrain = self.data_flow(idx=idx)
             
         if self.len_idx == 2:
-            self.model = dmodel(in_features=1,hidden_features=self.dim,out_features=1).float()
+            self.model = dmodel(in_features=1,hidden_features=self.dim).float()
+            self.input_dim_for_check = 1
         if self.len_idx == 3:
             self.model = Net(input_dim=2,hidden_dim=self.dim).float()
         if self.len_idx == 0:
             self.model = Net(input_dim=self.input_dim,hidden_dim=self.dim).float()
         self.optim = optim(self.model.parameters(), lr=0.001)
         self.loss_function = loss()
+        
+        if self.input_dim_for_check:
+            self.X  = self.X.reshape(-1,1)
         
         
     
@@ -161,8 +172,8 @@ class dense():
                 plt.scatter(self.Y[:,1],self.X[:,1],s=1,label='real')
             else:
                 plt.scatter(self.Y,self.X[:,1],s=1,label='real')
-            plt.xlabel(r'$X$')
-            plt.ylabel(r'$Y$')
+            plt.xlabel(rf'${self.column_names[0]}$')
+            plt.ylabel(rf'${self.column_names[1]}$')
             plt.legend()
         else:
             plt.scatter(self.model(self.X).detach().numpy(),self.X,s=2,label='predicted')
@@ -185,7 +196,7 @@ class dense():
                             )
         # fig.colorbar(surf, shrink=0.5, aspect=5)
         surf.update_traces(marker_size=3)
-        surf.update_layout(paper_bgcolor='#888888')
+        surf.update_layout(plot_bgcolor='#888888')
         surf.add_mesh3d(x=x, y=y, z=z, opacity=0.7,colorscale='sunsetdark',intensity=z,
             )
         surf.show()
