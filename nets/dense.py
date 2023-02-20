@@ -1,23 +1,18 @@
 from torch import nn
 
 class Net(nn.Module):
-        def __init__(self,dropout = True, hidden_dim = 8):
-            self.dropout = dropout
-            
-            super(self.Net,self).__init__()
-            self.input = nn.Linear(2,4)
-            self.act1 = nn.Tanh()
-            self.layer1 = nn.Linear(4,hidden_dim)
-            self.batchnorm = nn.BatchNorm1d(hidden_dim)
-            if dropout:
-                self.drop = nn.Dropout(p=0.05)
-            self.layer2 = nn.Linear(hidden_dim,2)
-            
-        def forward(self, x):
-            x = self.act1(self.input(x))
-            x = self.layer1(x)
-            x = self.batchnorm(x)
-            if self.dropout:
-                x = self.drop(x)
-            x = self.layer2(x)
-            return x
+    def __init__(self,input_dim:int=2,hidden_dim:int=200):
+        super(Net,self).__init__()
+        self.input = nn.Linear(input_dim,40)
+        self.act1 = nn.ReLU()
+        self.layer = nn.Linear(40,80)
+        self.act2 = nn.ReLU()
+        self.layer1 = nn.Linear(80,hidden_dim)
+        self.act3 = nn.ReLU()
+        self.layer2 = nn.Linear(hidden_dim,1)
+        
+    def forward(self, x):
+        x = self.act2(self.layer(self.act1(self.input(x))))
+        x = self.act3(self.layer1(x))
+        x = self.layer2(x)
+        return x
