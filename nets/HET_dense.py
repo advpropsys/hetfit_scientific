@@ -13,12 +13,12 @@ from sklearn.linear_model import SGDRegressor
 from sklearn.feature_selection import SelectFromModel
 
 class dense():
-    def __init__(self, typ='PU', hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',boundary_conditions:list=None):
+    def __init__(self, typ='PU', hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',sample_size:int=1000,source:str='dataset.csv',boundary_conditions:list=None):
         self.type:str = typ
         self.seed:int = 449
         self.dim = hidden_dim
         self.dropout = dropout
-        self.df = get_dataset(name=dataset,boundary_conditions=boundary_conditions)
+        self.df = get_dataset(sample_size=sample_size,source=source,name=dataset,boundary_conditions=boundary_conditions)
         self.epochs = epochs
         self.len_idx = 0
         self.input_dim_for_check = 0
@@ -103,11 +103,12 @@ class dense():
             
                 
                 ape_norm = abs(np.mean((Y_pred.detach().numpy()-data[1].detach().numpy())/(data[1].detach().numpy()+0.1)))
-                print('APE =',ape_norm)
+                if (i+1)%20==0:
+                    print(f'Iter {i+1} APE =',ape_norm)
                 self.loss_history.append(loss.data.item())
                 self.ape_history.append(None if ape_norm >1 else ape_norm)
                 
-    def compile(self,columns:tuple=None,idx:tuple=None, optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = dmodel) -> None:
+    def compile(self,columns:tuple=None,idx:tuple=None, optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = dmodel, custom:bool=False) -> None:
         """ Builds model, loss, optimizer. Has defaults
         Args:
             columns (tuple, optional): Columns to be selected for feature fitting. Defaults to (1,3,3,5).
@@ -116,8 +117,9 @@ class dense():
         """
         
         self.columns = columns
-        # if self.type == 'PU':
-            # self.init_seed()
+
+        
+                
         if not(columns):
             self.len_idx = 0
         else:
@@ -129,30 +131,45 @@ class dense():
             self.Xtrain = self.data_flow(columns_idx=self.columns)
         else:
             self.Xtrain = self.data_flow(idx=idx)
+        if custom:
+            self.model = model()
+            if self.len_idx == 2:
+                self.input_dim_for_check = 1
+        else: 
+            if self.len_idx == 2:
+                self.model = model(in_features=1,hidden_features=self.dim).float()
+                self.input_dim_for_check = 1
+            if self.len_idx == 3:
+                self.model = Net(input_dim=2,hidden_dim=self.dim).float()
+            if (self.len_idx == 0) or self.columns:
+                self.model = Net(input_dim=self.input_dim,hidden_dim=self.dim).float()
+                
+            self.optim = optim(self.model.parameters(), lr=0.001)
+            self.loss_function = loss()
             
-        if self.len_idx == 2:
-            self.model = model(in_features=1,hidden_features=self.dim).float()
-            self.input_dim_for_check = 1
-        if self.len_idx == 3:
-            self.model = Net(input_dim=2,hidden_dim=self.dim).float()
-        if (self.len_idx == 0) or self.columns:
-            self.model = Net(input_dim=self.input_dim,hidden_dim=self.dim).float()
-        self.optim = optim(self.model.parameters(), lr=0.001)
-        self.loss_function = loss()
-        
         if self.input_dim_for_check:
             self.X  = self.X.reshape(-1,1)
         
-        
+       
     
     def train(self,epochs:int=10) -> None:
         """ Train model
-
-        
+        If sklearn instance uses .fit()
         """
+        if 'sklearn' in str(self.model.__class__):
+            self.model.fit(np.array(self.X),np.array(self.Y))
+            plt.scatter(self.X,self.model.predict(self.X))
+            plt.scatter(self.X,self.Y)
+            plt.xlabel('Xreal')
+            plt.ylabel('Ypred/Yreal')
+            plt.show()
+            return print('Sklearn model fitted successfully')
+        else:
+            self.model.train()
+            
         self.loss_history = []
         self.ape_history = []
-        self.model.train()
+        
         self.epochs = epochs
         
         
@@ -189,23 +206,23 @@ class dense():
             return model(X).detach().numpy()
         
         return self.model(X).detach().numpy()
-        
+
     def plot(self):
         self.model.eval()
         print(self.Y.shape,self.model(self.X).detach().numpy().shape,self.X.shape)
         if self.X.shape[-1] != self.model(self.X).detach().numpy().shape[-1]:
             print('Size mismatch, try 3d plot, plotting by second dim of largest tensor')
-            plt.scatter(self.model(self.X).detach().numpy(),self.X[:,1],s=2,label='predicted')
+            plt.scatter(self.X[:,1],self.model(self.X).detach().numpy(),label='predicted',s=2)
             if len(self.Y.shape)!=1:
-                plt.scatter(self.Y[:,1],self.X[:,1],s=1,label='real')
+                plt.scatter(self.X[:,1],self.Y[:,1],s=1,label='real')
             else:
-                plt.scatter(self.Y,self.X[:,1],s=1,label='real')
+                plt.scatter(self.X[:,1],self.Y,s=1,label='real')
             plt.xlabel(rf'${self.column_names[0]}$')
             plt.ylabel(rf'${self.column_names[1]}$')
             plt.legend()
         else:
-            plt.scatter(self.model(self.X).detach().numpy(),self.X,s=2,label='predicted')
-            plt.scatter(self.Y,self.X,s=1,label='real')
+            plt.scatter(self.X,self.model(self.X).detach().numpy(),s=2,label='predicted')
+            plt.scatter(self.X,self.Y,s=1,label='real')
             plt.xlabel(r'$X$')
             plt.ylabel(r'$Y$')
             plt.legend()

@@ -12,7 +12,7 @@ np.random.seed(4269)
 
 
 
-class dataset(pd.DataFrame):
+class dataset():
     """ Creates dataset from input source
     """
     def __init__(self,number_samples:int, name:str,source:str,boundary_conditions:list=None):
@@ -24,7 +24,6 @@ class dataset(pd.DataFrame):
             source (str): _description_
             boundary_conditions (list): y1,y2,x1,x2
         """
-        super(dataset,self).__init__()
         self.sample_size = number_samples
         self.name = name
         self.samples = []
@@ -44,6 +43,7 @@ class dataset(pd.DataFrame):
         
         self.vae.start_training()
         self.samples = self.vae.predict(self.sample_size)
+    
         if self.boundary_conditions:
             self.samples=self.samples[((self.samples[:,0]>self.boundary_conditions[2]) & (self.samples[:,0] < self.boundary_conditions[-1]))&((self.samples[:,0]>self.boundary_conditions[0]) & (self.samples[:,0] < self.boundary_conditions[1]))]
             
