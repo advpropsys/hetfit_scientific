@@ -7,23 +7,47 @@ import torch
 import os
 import numpy as np
 from torch import nn, tensor
-from torchmetrics import MeanAbsolutePercentageError
 import pandas as pd
 import plotly.express as px
+from sklearn.linear_model import SGDRegressor
+from sklearn.feature_selection import SelectFromModel
 
 class dense():
-    def __init__(self, typ='PU', hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl'):
+    def __init__(self, typ='PU', hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',boundary_conditions:list=None):
         self.type:str = typ
         self.seed:int = 449
         self.dim = hidden_dim
         self.dropout = dropout
-        self.df = get_dataset(name=dataset)
+        self.df = get_dataset(name=dataset,boundary_conditions=boundary_conditions)
         self.epochs = epochs
         self.len_idx = 0
+        self.input_dim_for_check = 0
         
-    def feature_gen(self, fname:str=None,index:int=None,func=None) -> None:
+    def feature_gen(self, base:bool=True, fname:str=None,index:int=None,func=None) -> None:
         
-        self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
+        if base:
+            self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
+            self.df['j'] = self.df.iloc[:,1]/(self.df.iloc[:,3]*self.df.iloc[:,4])
+            self.df['B'] = self.df.iloc[:,-1].apply(lambda x: x ** 2)
+            
+        if fname and index and func:
+            self.df[fname] = self.df.iloc[:,index].apply(func)
+        
+    def feature_importance(self,X:pd.DataFrame,Y:pd.Series,verbose:int=1):
+        
+        mod = SGDRegressor()
+        
+        selector = SelectFromModel(mod,threshold='1.25*mean')
+        selector.fit(np.array(X),np.array(Y))
+        
+        if verbose:
+            print(f'\n Report of feature importance: {dict(zip(X.columns,selector.estimator_.coef_))}')
+        for i in range(len(selector.get_support())):
+            if selector.get_support()[i]:
+                print(f'-rank 1 PASSED:',X.columns[i])
+            else:
+                print(f'-rank 0 REJECT:',X.columns[i])
+        
         
     def data_flow(self,columns_idx:tuple = (1,3,3,5), idx:tuple=None, split_idx:int = 800) -> torch.utils.data.DataLoader:
         """ Data prep pipeline
@@ -82,7 +106,7 @@ class dense():
                 self.loss_history.append(loss.data.item())
                 self.ape_history.append(None if ape_norm >1 else ape_norm)
                 
-    def compile(self,columns:tuple=None,idx:tuple=None, optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss) -> None:
+    def compile(self,columns:tuple=None,idx:tuple=None, optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = dmodel) -> None:
         """ Builds model, loss, optimizer. Has defaults
         Args:
             columns (tuple, optional): Columns to be selected for feature fitting. Defaults to (1,3,3,5).
@@ -106,11 +130,11 @@ class dense():
             self.Xtrain = self.data_flow(idx=idx)
             
         if self.len_idx == 2:
-            self.model = dmodel(in_features=1,hidden_features=self.dim).float()
+            self.model = model(in_features=1,hidden_features=self.dim).float()
             self.input_dim_for_check = 1
         if self.len_idx == 3:
             self.model = Net(input_dim=2,hidden_dim=self.dim).float()
-        if self.len_idx == 0:
+        if (self.len_idx == 0) or self.columns:
             self.model = Net(input_dim=self.input_dim,hidden_dim=self.dim).float()
         self.optim = optim(self.model.parameters(), lr=0.001)
         self.loss_function = loss()
@@ -140,8 +164,11 @@ class dense():
     def save(self,name:str='model.pt') -> None:
         torch.save(self.model,name)
         
-    def export():
-        pass
+    def onnx_export(self,path:str='./models/model.onnx'):
+        torch.onnx.export(self.model,self.X,path)
+        
+    def jit_export(self,path:str='./models/model.pt'):
+        torch.jit.save(self.model,path)
         
     def inference(self,X:tensor, model_name:str=None) -> np.ndarray:
         """ Inference of (pre-)trained model
