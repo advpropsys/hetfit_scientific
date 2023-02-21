@@ -4,7 +4,7 @@ class Net(nn.Module):
     def __init__(self,input_dim:int=2,hidden_dim:int=200):
         super(Net,self).__init__()
         self.input = nn.Linear(input_dim,40)
-        self.act1 = nn.ReLU()
+        self.act1 = nn.Tanh()
         self.layer = nn.Linear(40,80)
         self.act2 = nn.ReLU()
         self.layer1 = nn.Linear(80,hidden_dim)
