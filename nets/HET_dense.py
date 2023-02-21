@@ -74,6 +74,7 @@ class dense():
         else:
             self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:]).float()
             self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx]).float()
+            
         print('Shapes for debug: (X,Y)',self.X.shape, self.Y.shape)
         train_data = torch.utils.data.TensorDataset(self.X, self.Y)
         Xtrain = torch.utils.data.DataLoader(train_data,batch_size=batch_size)
