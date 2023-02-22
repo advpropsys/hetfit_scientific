@@ -1,6 +1,7 @@
 from utils.dataset_loader import get_dataset
 from nets.dense import Net
 from nets.deep_dense import dmodel
+from PINN.pinns import *
 
 import matplotlib.pyplot as plt
 import torch
@@ -12,9 +13,9 @@ import plotly.express as px
 from sklearn.linear_model import SGDRegressor
 from sklearn.feature_selection import SelectFromModel
 
-class dense():
-    def __init__(self, typ='PU', hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',sample_size:int=1000,source:str='dataset.csv',boundary_conditions:list=None):
-        self.type:str = typ
+class SCI(): #Scaled Computing Interface
+    def __init__(self, hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',sample_size:int=1000,source:str='dataset.csv',boundary_conditions:list=None):
+        self.type:str = 'legacy'
         self.seed:int = 449
         self.dim = hidden_dim
         self.dropout = dropout
@@ -29,6 +30,7 @@ class dense():
             self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
             self.df['j'] = self.df.iloc[:,1]/(self.df.iloc[:,3]*self.df.iloc[:,4])
             self.df['B'] = self.df.iloc[:,-1].apply(lambda x: x ** 2)
+            self.df['nu_t'] = self.df.iloc[:,7]**2/(2*self.df.iloc[:,6]*self.df.P)
             
         if fname and index and func:
             self.df[fname] = self.df.iloc[:,index].apply(func)
@@ -61,6 +63,8 @@ class dense():
             torch.utils.data.DataLoader: Torch native dataloader
         """
         batch_size=2
+        
+        self.split_idx=split_idx
         
         if idx!=None:
             self.len_idx = len(idx)
@@ -131,6 +135,7 @@ class dense():
             self.Xtrain = self.data_flow(columns_idx=self.columns)
         else:
             self.Xtrain = self.data_flow(idx=idx)
+            
         if custom:
             self.model = model()
             if self.len_idx == 2:
@@ -213,7 +218,7 @@ class dense():
         if self.X.shape[-1] != self.model(self.X).detach().numpy().shape[-1]:
             print('Size mismatch, try 3d plot, plotting by second dim of largest tensor')
             plt.scatter(self.X[:,1],self.model(self.X).detach().numpy(),label='predicted',s=2)
-            if len(self.Y.shape)!=1:
+            if self.Y.shape[-1]!=1:
                 plt.scatter(self.X[:,1],self.Y[:,1],s=1,label='real')
             else:
                 plt.scatter(self.X[:,1],self.Y,s=1,label='real')
@@ -231,12 +236,12 @@ class dense():
         X = self.X
         self.model.eval()
         x = X[:,0].numpy().ravel()
-        y = y=X[:,1].numpy().ravel()
+        y = X[:,1].numpy().ravel()
         z = self.model(X).detach().numpy().ravel()
-        surf = px.scatter_3d(x=x, y=y,z=self.df.iloc[:,self.indexes[-1]].values[:800],opacity=0.3,
+        surf = px.scatter_3d(x=x, y=y,z=self.df.iloc[:,self.indexes[-1]].values[:self.split_idx],opacity=0.3,
                              labels={'x':f'{self.column_names[0]}',
                                      'y':f'{self.column_names[1]}',
-                                     'z':f'{self.column_names[2:]}'
+                                     'z':f'{self.column_names[-1]}'
                                      },title='Mesh prediction plot'
                             )
         # fig.colorbar(surf, shrink=0.5, aspect=5)
@@ -254,6 +259,88 @@ class dense():
         ape = (100-abs(np.mean(self.model(self.X).detach().numpy()-self.Y.numpy())*100))
         abs_ape = ape*gen_acc/100
         return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
+    
+    
+    
+class RCI(SCI): #Real object interface
+    def __init__(self,*args,**kwargs):
+        super(RCI,self).__init__()
+        
+    def data_flow(self,columns_idx:tuple = (1,3,3,5), idx:tuple=None, split_idx:int = 800) -> torch.utils.data.DataLoader:
+            """ Data prep pipeline
+
+            Args:
+                columns_idx (tuple, optional): Columns to be selected (sliced 1:2 3:4) for feature fitting. Defaults to (1,3,3,5). 
+                idx (tuple, optional): 2|3 indexes to be selected for feature fitting. Defaults to None. Use either idx or columns_idx (for F:R->R idx, for F:R->R2 columns_idx)
+                split_idx (int) : Index to split for training
+                
+            Returns:
+                torch.utils.data.DataLoader: Torch native dataloader
+            """
+            batch_size=2
+            
+            real_scale = pd.read_csv('data/dataset.csv').iloc[17,1:]
+            
+            
+            self.split_idx=split_idx
+            
+            if idx!=None:
+                self.len_idx = len(idx)
+                if len(idx)==2:
+                    self.X = tensor(self.df.iloc[:,idx[0]].values[:split_idx]*real_scale[idx[0]]).float()
+                    self.Y = tensor(self.df.iloc[:,idx[1]].values[:split_idx]*real_scale[idx[1]]).float()
+                    batch_size = 1
+                else:
+                    self.X = tensor(self.df.iloc[:,[idx[0],idx[1]]].values[:split_idx,:]*real_scale[[idx[0],idx[1]]]).float()
+                    self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx]*real_scale[idx[2]]).float()
+            else:
+                self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:]*real_scale[[idx[0],idx[1]]]).float()
+                self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx]*real_scale[[idx[2],idx[3]]]).float()
+                
+            print('Shapes for debug: (X,Y)',self.X.shape, self.Y.shape)
+            train_data = torch.utils.data.TensorDataset(self.X, self.Y)
+            Xtrain = torch.utils.data.DataLoader(train_data,batch_size=batch_size)
+            self.input_dim = self.X.size(-1)
+            self.indexes = idx if idx else columns_idx
+            self.column_names = [ self.df.columns[i] for i in self.indexes ]
+            
+            self.df.iloc[:,1:] = self.df.iloc[:,1:] * real_scale
+            return Xtrain
+        
+    def compile(self,columns:tuple=None,idx:tuple=(3,1), optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = PINNd_p,lr:float=0.001) -> None:
+        """ Builds model, loss, optimizer. Has defaults
+        Args:
+            columns (tuple, optional): Columns to be selected for feature fitting. Defaults to None.
+            idx (tuple, optional): indexes to be selected Default (3,1)
+            optim - torch Optimizer
+            loss - torch Loss function (nn)
+        """
+        
+        self.columns = columns
+
+        
+                
+        if not(columns):
+            self.len_idx = 0
+        else:
+            self.len_idx = len(columns)
+            
+        if not(self.columns) and not(idx):
+            self.Xtrain = self.data_flow()
+        elif not(idx): 
+            self.Xtrain = self.data_flow(columns_idx=self.columns)
+        else:
+            self.Xtrain = self.data_flow(idx=idx)
+        
+        self.model = model().float()
+        self.input_dim_for_check = self.X.size(-1)
+                
+        self.optim = optim(self.model.parameters(), lr=lr)
+        self.loss_function = loss()
+            
+        if self.input_dim_for_check == 1:
+            self.X  = self.X.reshape(-1,1)
+    
     
             
     
