@@ -1,5 +1,6 @@
 from torch import nn,tensor
-    
+import numpy as np
+import seaborn as sns
 class PINNd_p(nn.Module):
     def __init__(self):
         super(PINNd_p,self).__init__()
@@ -24,7 +25,7 @@ class PINNhd_ma(nn.Module):
     
     """
     def __init__(self):
-        super(PINNd_p,self).__init__()
+        super(PINNhd_ma,self).__init__()
         weights = tensor([0.01])
         self.weights = nn.Parameter(weights)
     def forward(self,x):
@@ -38,13 +39,18 @@ class PINNT_ma(nn.Module):
    
     """
     def __init__(self):
-        super(PINNd_p,self).__init__()
+        super(PINNT_ma,self).__init__()
         weights = tensor([0.01])
         self.weights = nn.Parameter(weights)
     def forward(self,x):
         c, = self.weights
         x1 = c*x[0]*x[1]**0.5
         return x1
+    
+    
+    
+    
+    
     
 
     
