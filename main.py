@@ -1,5 +1,5 @@
 import streamlit as st
-import os;os.chdir('..')
+
 from nets.envs import SCI
 
 st.title('HETfit_scientific')
