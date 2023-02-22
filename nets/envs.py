@@ -49,7 +49,7 @@ class SCI(): #Scaled Computing Interface
                 print(f'-rank 1 PASSED:',X.columns[i])
             else:
                 print(f'-rank 0 REJECT:',X.columns[i])
-        
+        return f'\n Report of feature importance: {dict(zip(X.columns,selector.estimator_.coef_))}'
         
     def data_flow(self,columns_idx:tuple = (1,3,3,5), idx:tuple=None, split_idx:int = 800) -> torch.utils.data.DataLoader:
         """ Data prep pipeline
@@ -87,11 +87,11 @@ class SCI(): #Scaled Computing Interface
         self.column_names = [ self.df.columns[i] for i in self.indexes ]
         return Xtrain
         
-    def init_seed(self):
+    def init_seed(self,seed):
         """ Initializes seed for torch optional()
         """
-        if self.type == 'PU':
-            torch.manual_seed(self.seed)
+        
+        torch.manual_seed(seed)
         
     def train_epoch(self,X, model, loss_function, optim):
         for i,data in enumerate(X):
@@ -107,7 +107,7 @@ class SCI(): #Scaled Computing Interface
             
                 
                 ape_norm = abs(np.mean((Y_pred.detach().numpy()-data[1].detach().numpy())/(data[1].detach().numpy()+0.1)))
-                if (i+1)%20==0:
+                if (i+1)%200==0:
                     print(f'Iter {i+1} APE =',ape_norm)
                 self.loss_history.append(loss.data.item())
                 self.ape_history.append(None if ape_norm >1 else ape_norm)
@@ -249,8 +249,10 @@ class SCI(): #Scaled Computing Interface
         surf.update_layout(plot_bgcolor='#888888')
         surf.add_mesh3d(x=x, y=y, z=z, opacity=0.7,colorscale='sunsetdark',intensity=z,
             )
-        surf.show()
+        # surf.show()
         
+        return surf
+    
     def performance(self,c=0.4) -> dict:
         a=[]
         for i in range(1000):
@@ -279,10 +281,12 @@ class RCI(SCI): #Real object interface
             """
             batch_size=2
             
-            real_scale = pd.read_csv('data/dataset.csv').iloc[17,1:]
-            
+            real_scale = pd.read_csv('data/dataset.csv').iloc[17,1:].to_numpy()
             
             self.split_idx=split_idx
+            
+            
+           
             
             if idx!=None:
                 self.len_idx = len(idx)
@@ -296,7 +300,9 @@ class RCI(SCI): #Real object interface
             else:
                 self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:]*real_scale[[idx[0],idx[1]]]).float()
                 self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx]*real_scale[[idx[2],idx[3]]]).float()
-                
+            self.Y = self.Y[self.X>0]
+            self.X = self.X[self.X > 0] 
+              
             print('Shapes for debug: (X,Y)',self.X.shape, self.Y.shape)
             train_data = torch.utils.data.TensorDataset(self.X, self.Y)
             Xtrain = torch.utils.data.DataLoader(train_data,batch_size=batch_size)
@@ -305,6 +311,8 @@ class RCI(SCI): #Real object interface
             self.column_names = [ self.df.columns[i] for i in self.indexes ]
             
             self.df.iloc[:,1:] = self.df.iloc[:,1:] * real_scale
+            
+            
             return Xtrain
         
     def compile(self,columns:tuple=None,idx:tuple=(3,1), optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = PINNd_p,lr:float=0.001) -> None:
