@@ -4,6 +4,7 @@ from nets.deep_dense import dmodel
 from PINN.pinns import *
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 import torch
 import os
 import numpy as np
@@ -282,6 +283,7 @@ class RCI(SCI): #Real object interface
             batch_size=2
             
             real_scale = pd.read_csv('data/dataset.csv').iloc[17,1:].to_numpy()
+            self.df.iloc[:,1:] = self.df.iloc[:,1:] * real_scale
             
             self.split_idx=split_idx
             
@@ -291,17 +293,17 @@ class RCI(SCI): #Real object interface
             if idx!=None:
                 self.len_idx = len(idx)
                 if len(idx)==2:
-                    self.X = tensor(self.df.iloc[:,idx[0]].values[:split_idx]*real_scale[idx[0]]).float()
-                    self.Y = tensor(self.df.iloc[:,idx[1]].values[:split_idx]*real_scale[idx[1]]).float()
+                    self.X = tensor(self.df.iloc[:,idx[0]].values[:split_idx].astype(float)).float()
+                    self.Y = tensor(self.df.iloc[:,idx[1]].values[:split_idx].astype(float)).float()
                     batch_size = 1
                 else:
-                    self.X = tensor(self.df.iloc[:,[idx[0],idx[1]]].values[:split_idx,:]*real_scale[[idx[0],idx[1]]]).float()
-                    self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx]*real_scale[idx[2]]).float()
+                    self.X = tensor(self.df.iloc[:,[idx[0],idx[1]]].values[:split_idx,:].astype(float)).float()
+                    self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx].astype(float)).float()
             else:
-                self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:]*real_scale[[idx[0],idx[1]]]).float()
-                self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx]*real_scale[[idx[2],idx[3]]]).float()
-            self.Y = self.Y[self.X>0]
-            self.X = self.X[self.X > 0] 
+                self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:].astype(float)).float()
+                self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx].astype(float)).float()
+            self.Y = self.Y.abs()
+            self.X = self.X.abs()
               
             print('Shapes for debug: (X,Y)',self.X.shape, self.Y.shape)
             train_data = torch.utils.data.TensorDataset(self.X, self.Y)
@@ -310,7 +312,7 @@ class RCI(SCI): #Real object interface
             self.indexes = idx if idx else columns_idx
             self.column_names = [ self.df.columns[i] for i in self.indexes ]
             
-            self.df.iloc[:,1:] = self.df.iloc[:,1:] * real_scale
+            
             
             
             return Xtrain
@@ -348,7 +350,39 @@ class RCI(SCI): #Real object interface
             
         if self.input_dim_for_check == 1:
             self.X  = self.X.reshape(-1,1)
-    
+    def plot(self):
+        self.model.eval()
+        if 'PINN' in str(self.model.__class__):
+            self.preds=np.array([])
+            for i in self.X:
+                self.preds = np.append(self.preds,self.model(i).detach().numpy()) 
+        print(self.Y.shape,self.preds.shape,self.X.shape)
+        if self.X.shape[-1] != self.preds.shape[-1]:
+            print('Size mismatch, try 3d plot, plotting by second dim of largest tensor')
+            plt.scatter(self.X[:,1],self.preds,label='predicted',s=2)
+            if self.Y.shape[-1]!=1:
+                sns.scatterplot(x=self.X[:,1],y=self.Y,s=2,label='real')
+            else:
+                sns.scatterplot(x=self.X[:,1],y=self.Y,s=1,label='real')
+            plt.xlabel(rf'${self.column_names[0]}$')
+            plt.ylabel(rf'${self.column_names[1]}$')
+            plt.legend()
+        else:
+            sns.scatterplot(x=self.X,y=self.preds,s=2,label='predicted')
+            sns.scatterplot(x=self.X,y=self.Y,s=1,label='real')
+            plt.xlabel(r'$X$')
+            plt.ylabel(r'$Y$')
+            plt.legend()
+            
+    def performance(self,c=0.4) -> dict:
+        a=[]
+        for i in range(1000):
+            dfcopy = (self.df.iloc[:,1:]-self.df.iloc[:,1:].min())/(self.df.iloc[:,1:].max()-self.df.iloc[:,1:].min())
+            a.append(100-abs(np.mean(dfcopy.iloc[:24,1:].values-dfcopy.iloc[24:,1:].sample(24).values)/(dfcopy.iloc[:24,1:].values+c))*100)
+        gen_acc = np.mean(a)
+        ape = (100-abs(np.mean(self.model(self.preds).detach().numpy()-self.Y.numpy())*100))
+        abs_ape = ape*gen_acc/100
+        return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
     
             
     
