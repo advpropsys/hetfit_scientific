@@ -2,6 +2,10 @@ from torch import nn,tensor
 import numpy as np
 import seaborn as sns
 class PINNd_p(nn.Module):
+    """ $d \mapsto P$
+
+    
+    """
     def __init__(self):
         super(PINNd_p,self).__init__()
         weights = tensor([60.,0.5])
@@ -20,7 +24,7 @@ class PINNd_p(nn.Module):
         return x1
     
 class PINNhd_ma(nn.Module):
-    """ h,d -> m_a 
+    """ $h,d \mapsto m_a $
 
     
     """
@@ -34,7 +38,7 @@ class PINNhd_ma(nn.Module):
         return x1
     
 class PINNT_ma(nn.Module):
-    """ m_a, U -> T
+    """$ m_a, U \mapsto T$
 
    
     """
