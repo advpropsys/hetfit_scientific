@@ -11,14 +11,7 @@ class PINNd_p(nn.Module):
         weights = tensor([60.,0.5])
         self.weights = nn.Parameter(weights)
     def forward(self,x):
-        """P,U input, d output
-
-        Args:
-            x (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
+        
         c,b = self.weights
         x1 = (x[0]/(c*x[1]))**0.5
         return x1
