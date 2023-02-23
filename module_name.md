@@ -7,7 +7,7 @@
   - [PINNd\_p Objects](#pinnd_p-objects)
   - [PINNhd\_ma Objects](#pinnhd_ma-objects)
   - [PINNT\_ma Objects](#pinnt_ma-objects)
-- [:orange\[utils\]](#orangeutils)
+- [utils](#utils)
   - [utils.test](#utilstest)
   - [utils.dataset\_loader](#utilsdataset_loader)
       - [get\_dataset](#get_dataset)
@@ -85,8 +85,7 @@ $ m_a, U \mapsto T$
 
 <a id="utils"></a>
 
----
-# :orange[utils]
+# utils
 
 <a id="utils.test"></a>
 
