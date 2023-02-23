@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>design.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>design.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Returns vec B_z for MS config</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">B_field_norm</span><span class="p">(</span><span class="n">Bmax</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span><span class="n">L</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span><span class="n">k</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Args:
+</code></pre>
+<p>Bmax (any): maximum B in thruster
+   L - channel length
+   k - magnetic field profile number</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="o">*</span><span class="mf">1.4</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">Bmax</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="p">(</span><span class="mf">1.2</span><span class="o">*</span><span class="n">L</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">z</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">B</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">B</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Computes design via numerical model, uses fits from PINNs</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">PUdesign</span><span class="p">(</span><span class="n">P</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span><span class="n">U</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Args:
+    P (float): <em>description</em>
+    U (float): <em>description</em></p>
+<p>Returns:
+    <em>type</em>: <em>description</em></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="mi">635</span><span class="o">*</span><span class="n">U</span><span class="p">))</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="mf">0.245</span><span class="o">*</span><span class="n">d</span>
+    <span class="n">m_a</span> <span class="o">=</span> <span class="mf">0.0025</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">d</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mi">890</span> <span class="o">*</span> <span class="n">m_a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">d</span><span class="o">*</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">Isp</span> <span class="o">=</span> <span class="n">T</span><span class="o">/</span><span class="p">(</span><span class="n">m_a</span><span class="o">*</span><span class="mf">9.81</span><span class="p">)</span> 
+    <span class="n">nu_t</span> <span class="o">=</span> <span class="n">T</span><span class="o">*</span><span class="n">Isp</span><span class="o">*</span><span class="mf">9.81</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">d</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">m_a</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">nu_t</span><span class="p">,</span><span class="n">Isp</span><span class="p">]],</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;m_a&#39;</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;j&#39;</span><span class="p">,</span><span class="s1">&#39;nu_t&#39;</span><span class="p">,</span><span class="s1">&#39;Isp&#39;</span><span class="p">])</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

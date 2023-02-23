@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>main.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>main.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+
+<span class="kn">from</span> <span class="nn">nets.envs</span> <span class="kn">import</span> <span class="n">SCI</span>
+
+
+<span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span>
+        <span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;HET_sci&quot;</span><span class="p">,</span>
+        <span class="n">menu_items</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;About&#39;</span><span class="p">:</span><span class="s1">&#39;https://advpropsys.github.io&#39;</span>
+        <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;HETfit_scientific&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;#### Imagine a package which was engineered primarly for data driven plasma physics devices design, mainly hall effect thrusters, yup that&#39;s it&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">### :orange[Don&#39;t be scared away though, it has much simpler interface than anything you ever used for such designs]&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;### Main concepts:&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span> <span class="s2">&quot;- Each observational/design session is called an **environment**, for now it can be either RCI or SCI (Real or scaled interface)&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> In this overview we will only touch SCI, since RCI is using PINNs which are different topic&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- You specify most of the run parameters on this object init, :orange[**including generation of new samples**] via GAN&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- You may want to generate new features, do it !&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- Want to select best features for more effctive work? Done!&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- Compile environment with your model of choice, can be ***any*** torch model or sklearn one&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- Train !&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- Plot, inference, save, export to jit/onnx, measure performance - **they all are one liners** &quot;</span>
+            <span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;### tl;dr </span><span class="se">\n</span><span class="s1">- Create environment&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">```run = SCI(*args,**kwargs)```&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> - Generate features ```run.feature_gen()``` &#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> - Select features ```run.feature_importance()```&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> - Compile env ```run.compile()```&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> - Train model in env ```run.train()```&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> - Inference, plot, performance, ex. ```run.plot3d()```&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> #### And yes, it all will work even without any additional arguments from user besides column indexes&#39;</span>
+            <span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Comparison with *arXiv:2206.04440v3*&#39;</span><span class="p">)</span>
+<span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">col1</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;Geometry accuracy on domain&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">&#39;83%&#39;</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="s1">&#39;15%&#39;</span><span class="p">)</span>
+<span class="n">col2</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;$d \mapsto h$ prediction&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">&#39;98%&#39;</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="s1">&#39;14%&#39;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;Example:&#39;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;Remeber indexes and column names on this example: $P$ - 1, $d$ - 3, $h$ - 3, $m_a$ - 6,$T$ - 7&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run = SCI(*args,**kwargs)&#39;</span><span class="p">)</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">SCI</span><span class="p">()</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.feature_gen()&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="o">.</span><span class="n">feature_gen</span><span class="p">()</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;New features: (index-0:22 original samples, else is GAN generated)&#39;</span><span class="p">,</span><span class="n">run</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">9</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Most of real dataset is from *doi:0.2514/1.B37424*, hence the results mostly agree with it in specific&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.feature_importance(run.df.iloc[1:,1:7].astype(float),run.df.iloc[1:,7]) # Clear and easy example&#39;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">feature_importance</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span><span class="n">run</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">6</span><span class="p">]))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39; As we can see only $h$ and $d$ passed for $m_a$ model, not only that linear dependacy was proven experimantally, but now we got this from data driven source&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.compile(idx=(1,3,7))&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">idx</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.train(epochs=10)&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.plot3d()&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">plot3d</span><span class="p">())</span>
+<span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.performance()&#39;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">performance</span><span class="p">())</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Try it out yourself! Select a column from 1 to 10&#39;</span><span class="p">)</span>
+<span class="n">number</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">number_input</span><span class="p">(</span><span class="s1">&#39;Here&#39;</span><span class="p">,</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">number</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;run.compile(idx=(1,3,</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s1">))&#39;</span><span class="p">)</span>
+    <span class="n">run</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">idx</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">number</span><span class="p">))</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.train(epochs=10)&#39;</span><span class="p">)</span>
+    <span class="n">run</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">code</span><span class="p">(</span><span class="s1">&#39;run.plot3d()&#39;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">plot3d</span><span class="p">())</span>
+
+
+
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;In this intro we covered simplest user flow while using HETFit package, resulted data can be used to leverage PINN and analytical models of Hall effect thrusters&#39;</span>
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> #### :orange[To cite please contact author on https://github.com/advpropsys]&#39;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

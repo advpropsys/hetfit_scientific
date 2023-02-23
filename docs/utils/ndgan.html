@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>ndgan.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>ndgan.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">LeakyReLU</span><span class="p">,</span><span class="n">ReLU</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>from keras.utils import plot_model</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4062710504</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">keras.utils</span> <span class="kn">import</span> <span class="n">set_random_seed</span>
+<span class="n">set_random_seed</span><span class="p">(</span><span class="mi">440</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">DCGAN</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">latent</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="o">=</span><span class="mi">16</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dfs</span><span class="o">=</span><span class="n">data</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">=</span><span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="o">=</span><span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discriminator_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_models</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gan_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">define_gan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">discriminator_model</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">define_discriminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inputs</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; function to return the compiled discriminator model&#39;&#39;&#39;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">kernel_initializer</span> <span class="o">=</span> <span class="s1">&#39;he_uniform&#39;</span><span class="p">,</span> <span class="n">input_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">kernel_initializer</span> <span class="o">=</span> <span class="s1">&#39;he_uniform&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">kernel_initializer</span> <span class="o">=</span> <span class="s1">&#39;he_uniform&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;selu&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span> <span class="o">=</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="s1">&#39;binary_focal_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">model</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">define_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="mi">8</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">kernel_initializer</span><span class="o">=</span> <span class="s1">&#39;he_uniform&#39;</span><span class="p">,</span> <span class="n">input_dim</span> <span class="o">=</span> <span class="n">latent_dim</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">kernel_initializer</span> <span class="o">=</span> <span class="s1">&#39;he_uniform&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;elu&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">model</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">build_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">discriminator_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">define_discriminator</span><span class="p">()</span>
+        <span class="n">generator_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">define_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">generator_model</span><span class="p">,</span><span class="n">discriminator_model</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">generate_latent_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;generate points in latent space as input for the generator&#39;&#39;&#39;</span>
+        <span class="n">x_input</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">latent_dim</span><span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="c1">#generate points in latent space</span>
+        <span class="n">x_input</span> <span class="o">=</span> <span class="n">x_input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">latent_dim</span><span class="p">)</span>  <span class="c1">#reshape</span>
+        <span class="k">return</span> <span class="n">x_input</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">generate_fake_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">generator</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">x_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_latent_points</span><span class="p">(</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="c1">#genarate points in latent space</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_input</span><span class="p">)</span> <span class="c1">#predict outputs</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">define_gan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">generator</span><span class="p">,</span> <span class="n">discriminator</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;define the combined generator and discriminator model&#39;&#39;&#39;</span>
+        <span class="n">discriminator</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">discriminator</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span> <span class="o">=</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="s1">&#39;binary_crossentropy&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">summarize_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="n">discriminator</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">200</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;evaluate the discriminator and plot real and fake samples&#39;&#39;&#39;</span>
+        <span class="n">x_real</span><span class="p">,</span> <span class="n">y_real</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfs</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">acc_real</span> <span class="o">=</span> <span class="n">discriminator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x_real</span><span class="p">,</span> <span class="n">y_real</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_fake</span><span class="p">,</span> <span class="n">y_fake</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_fake_samples</span><span class="p">(</span><span class="n">generator</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">acc_fake</span> <span class="o">=</span> <span class="n">discriminator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x_fake</span><span class="p">,</span> <span class="n">y_fake</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Real Acc.: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">acc_real</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Fake Acc.: &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">acc_fake</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>x_real /= np.max(np.abs(x_real),axis=0)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_real</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_real</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_fake</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_fake</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">train_gan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">g_model</span><span class="p">,</span><span class="n">d_model</span><span class="p">,</span><span class="n">gan_model</span><span class="p">,</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">2500</span><span class="p">,</span><span class="n">num_eval</span> <span class="o">=</span> <span class="mi">2500</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; function to train gan model&#39;&#39;&#39;</span>
+        <span class="n">half_batch</span> <span class="o">=</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>run epochs </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+            <span class="n">X_real</span><span class="p">,</span> <span class="n">y_real</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfs</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">23</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">#generate real examples</span>
+            <span class="n">d_model</span><span class="o">.</span><span class="n">train_on_batch</span><span class="p">(</span><span class="n">X_real</span><span class="p">,</span> <span class="n">y_real</span><span class="p">)</span>               <span class="c1"># train on real data</span>
+            <span class="n">X_fake</span><span class="p">,</span> <span class="n">y_fake</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_fake_samples</span><span class="p">(</span><span class="n">g_model</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">,</span> <span class="n">half_batch</span><span class="p">)</span> <span class="c1">#generate fake samples</span>
+            <span class="n">d_model</span><span class="o">.</span><span class="n">train_on_batch</span><span class="p">(</span><span class="n">X_fake</span><span class="p">,</span> <span class="n">y_fake</span><span class="p">)</span>                <span class="c1">#train on fake data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>prepare points in latent space as input for the generator</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">x_gan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_latent_points</span><span class="p">(</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="n">y_gan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>    <span class="c1">#generate fake labels for gan</span>
+            <span class="n">gan_model</span><span class="o">.</span><span class="n">train_on_batch</span><span class="p">(</span><span class="n">x_gan</span><span class="p">,</span> <span class="n">y_gan</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">num_eval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">summarize_performance</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">g_model</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">start_training</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_gan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">discriminator_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gan_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">x_fake</span><span class="p">,</span> <span class="n">y_fake</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_fake_samples</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">latent</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x_fake</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
