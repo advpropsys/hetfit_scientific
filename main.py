@@ -41,6 +41,8 @@ st.code('run.train(epochs=10)')
 run.train(epochs=10)
 st.code('run.plot3d()')
 st.write(run.plot3d())
+st.code('run.performance()')
+st.write(run.performance())
 
 st.write('Try it out yourself! Select a column from 1 to 10')
 number = st.number_input('Here',min_value=1, max_value=10, step=1)
