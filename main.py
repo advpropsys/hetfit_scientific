@@ -30,7 +30,9 @@ st.markdown('### tl;dr \n- Create environment'
             '\n #### And yes, it all will work even without any additional arguments from user besides column indexes'
             )
 
-st.metric('Geometry accuracy on domain vs previous data driven paper',value='83%',delta='15%')
+col1, col2 = st.columns(2)
+col1.metric('Geometry accuracy on domain vs previous data driven paper',value='83%',delta='15%')
+col2.metric('$d \mapsto h$ prediction',value='98%',delta='14%')
 
 st.header('Example:')
 
