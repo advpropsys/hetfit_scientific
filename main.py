@@ -29,9 +29,9 @@ st.markdown('### tl;dr \n- Create environment'
             '\n - Inference, plot, performance, ex. ```run.plot3d()```'
             '\n #### And yes, it all will work even without any additional arguments from user besides column indexes'
             )
-
+st.write('Comparison with *arXiv:2206.04440v3*')
 col1, col2 = st.columns(2)
-col1.metric('Geometry accuracy on domain vs previous data driven paper',value='83%',delta='15%')
+col1.metric('Geometry accuracy on domain',value='83%',delta='15%')
 col2.metric('$d \mapsto h$ prediction',value='98%',delta='14%')
 
 st.header('Example:')
@@ -44,6 +44,7 @@ st.code('run.feature_gen()')
 run.feature_gen()
 st.write('New features: (index-0:22 original samples, else is GAN generated)',run.df.iloc[1:,9:].astype(float))
 st.code('run.feature_importance(run.df.iloc[1:,1:7].astype(float),run.df.iloc[1:,7]) # Clear and easy example')
+st.write('Most of real dataset is from *doi:0.2514/1.B37424*')
 st.write(run.feature_importance(run.df.iloc[1:,1:6].astype(float),run.df.iloc[1:,6]))
 st.markdown(' As we can see only $h$ and $d$ passed for $m_a$ model, not only that linear dependacy was proven experimantally, but now we got this from data driven source')
 st.code('run.compile(idx=(1,3,7))')
