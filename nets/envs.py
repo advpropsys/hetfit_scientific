@@ -479,3 +479,5 @@ class RCI(SCI): #Real object interface
         abs_ape = ape*gen_acc/100
         return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
     
+            
+    
