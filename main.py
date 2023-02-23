@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 st.title('HETfit_scientific')
-st.markdown("#### Imagine a package which was engineered primarly for data driven plasma physics devices design, mainly hall effect thrusters, yup that's it"
+st.markdown("#### Imagine a package which was engineered primarly for data driven plasma physics devices design, mainly low power hall effect thrusters, yup that's it"
             "\n### :orange[Don't be scared away though, it has much simpler interface than anything you ever used for such designs]")
 st.markdown('### Main concepts:')
 st.markdown( "- Each observational/design session is called an **environment**, for now it can be either RCI or SCI (Real or scaled interface)"
@@ -73,5 +73,5 @@ if number:
 
 
 
-st.markdown('In this intro we covered simplest user flow while using HETFit package, resulted data can be used to leverage PINN and analytical models of Hall effect thrusters'
+st.markdown('In this intro we covered simplest userflow while using HETFit package, resulted data can be used to leverage PINN and analytical models of Hall effect thrusters'
             '\n #### :orange[To cite please contact author on https://github.com/advpropsys]')
