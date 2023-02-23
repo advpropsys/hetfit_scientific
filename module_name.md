@@ -4,7 +4,6 @@
 * [PINN](#PINN)
 * [PINN.pinns](#PINN.pinns)
   * [PINNd\_p](#PINN.pinns.PINNd_p)
-    * [forward](#PINN.pinns.PINNd_p.forward)
   * [PINNhd\_ma](#PINN.pinns.PINNhd_ma)
   * [PINNT\_ma](#PINN.pinns.PINNT_ma)
 * [utils](#utils)
@@ -61,24 +60,7 @@
 class PINNd_p(nn.Module)
 ```
 
-<a id="PINN.pinns.PINNd_p.forward"></a>
-
-#### forward
-
-```python
-def forward(x)
-```
-
-P,U input, d output
-
-**Arguments**:
-
-- `x` __type__ - _description_
-  
-
-**Returns**:
-
-- `_type_` - _description_
+$d \mapsto P$
 
 <a id="PINN.pinns.PINNhd_ma"></a>
 
@@ -88,7 +70,7 @@ P,U input, d output
 class PINNhd_ma(nn.Module)
 ```
 
-h,d -> m_a
+$h,d \mapsto m_a $
 
 <a id="PINN.pinns.PINNT_ma"></a>
 
@@ -98,7 +80,7 @@ h,d -> m_a
 class PINNT_ma(nn.Module)
 ```
 
-m_a, U -> T
+$ m_a, U \mapsto T$
 
 <a id="utils"></a>
 
