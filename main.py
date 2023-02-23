@@ -5,6 +5,9 @@ from nets.envs import SCI
 
 st.set_page_config(
         page_title="HET_sci",
+        menu_items={
+            'My portfolio':'https://advpropsys.github.io'
+        }
 )
 
 st.title('HETfit_scientific')
@@ -43,8 +46,9 @@ run = SCI()
 st.code('run.feature_gen()')
 run.feature_gen()
 st.write('New features: (index-0:22 original samples, else is GAN generated)',run.df.iloc[1:,9:].astype(float))
+st.write('Most of real dataset is from *doi:0.2514/1.B37424*, hence the results mostly agree with it in specific')
 st.code('run.feature_importance(run.df.iloc[1:,1:7].astype(float),run.df.iloc[1:,7]) # Clear and easy example')
-st.write('Most of real dataset is from *doi:0.2514/1.B37424*')
+
 st.write(run.feature_importance(run.df.iloc[1:,1:6].astype(float),run.df.iloc[1:,6]))
 st.markdown(' As we can see only $h$ and $d$ passed for $m_a$ model, not only that linear dependacy was proven experimantally, but now we got this from data driven source')
 st.code('run.compile(idx=(1,3,7))')
