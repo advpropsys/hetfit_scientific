@@ -389,9 +389,13 @@ class RCI(SCI): #Real object interface
             dfcopy = (self.df.iloc[:,1:8]-self.df.iloc[:,1:8].min())/(self.df.iloc[:,1:8].max()-self.df.iloc[:,1:8].min())
             a.append(100-abs(np.mean(dfcopy.iloc[1:24,1:].values-dfcopy.iloc[24:,1:].sample(23).values)/(dfcopy.iloc[1:24,1:].values+c))*100)
         gen_acc = np.mean(a)
-        ape = (100-abs(np.mean(self.model(self.preds).detach().numpy()-self.Y.numpy())*100))
+        
+        ape = (100-abs(np.mean(self.preds-self.Y.numpy())*100))
         abs_ape = ape*gen_acc/100
         return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
+    
+    
+        
     
             
     
