@@ -30,7 +30,7 @@ class SCI(): #Scaled Computing Interface
         if base:
             self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
             self.df['j'] = self.df.iloc[:,1]/(self.df.iloc[:,3]*self.df.iloc[:,4])
-            self.df['B'] = self.df.iloc[:,-1].apply(lambda x: x ** 2)
+            self.df['B'] = self.df.iloc[:,-1].apply(lambda x: x ** 2).apply(lambda x:1 if x>1 else x)
             self.df['nu_t'] = self.df.iloc[:,7]**2/(2*self.df.iloc[:,6]*self.df.P)
             
         if fname and index and func:
@@ -257,9 +257,10 @@ class SCI(): #Scaled Computing Interface
     def performance(self,c=0.4) -> dict:
         a=[]
         for i in range(1000):
-            a.append(100-abs(np.mean(self.df.iloc[:24,1:].values-self.df.iloc[24:,1:].sample(24).values)/(self.Y.numpy()+c))*100)
+            a.append(100-abs(np.mean(self.df.iloc[1:24,1:8].values-self.df.iloc[24:,1:8].sample(23).values)/(self.Y.numpy()[1:]+c))*100)
+    
         gen_acc = np.mean(a)
-        ape = (100-abs(np.mean(self.model(self.X).detach().numpy()-self.Y.numpy())*100))
+        ape = (100-abs(np.mean(self.model(self.X).detach().numpy()-self.Y.numpy()[1:])*100))
         abs_ape = ape*gen_acc/100
         return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
     
@@ -377,8 +378,8 @@ class RCI(SCI): #Real object interface
     def performance(self,c=0.4) -> dict:
         a=[]
         for i in range(1000):
-            dfcopy = (self.df.iloc[:,1:]-self.df.iloc[:,1:].min())/(self.df.iloc[:,1:].max()-self.df.iloc[:,1:].min())
-            a.append(100-abs(np.mean(dfcopy.iloc[:24,1:].values-dfcopy.iloc[24:,1:].sample(24).values)/(dfcopy.iloc[:24,1:].values+c))*100)
+            dfcopy = (self.df.iloc[:,1:8]-self.df.iloc[:,1:8].min())/(self.df.iloc[:,1:8].max()-self.df.iloc[:,1:8].min())
+            a.append(100-abs(np.mean(dfcopy.iloc[1:24,1:].values-dfcopy.iloc[24:,1:].sample(23).values)/(dfcopy.iloc[1:24,1:].values+c))*100)
         gen_acc = np.mean(a)
         ape = (100-abs(np.mean(self.model(self.preds).detach().numpy()-self.Y.numpy())*100))
         abs_ape = ape*gen_acc/100
