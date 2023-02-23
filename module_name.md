@@ -1,3 +1,46 @@
+# Table of Contents
+
+* [main](#main)
+* [PINN](#PINN)
+* [PINN.pinns](#PINN.pinns)
+  * [PINNd\_p](#PINN.pinns.PINNd_p)
+    * [forward](#PINN.pinns.PINNd_p.forward)
+  * [PINNhd\_ma](#PINN.pinns.PINNhd_ma)
+  * [PINNT\_ma](#PINN.pinns.PINNT_ma)
+* [utils](#utils)
+* [utils.test](#utils.test)
+* [utils.dataset\_loader](#utils.dataset_loader)
+  * [get\_dataset](#utils.dataset_loader.get_dataset)
+* [utils.ndgan](#utils.ndgan)
+  * [DCGAN](#utils.ndgan.DCGAN)
+    * [define\_discriminator](#utils.ndgan.DCGAN.define_discriminator)
+    * [generate\_latent\_points](#utils.ndgan.DCGAN.generate_latent_points)
+    * [define\_gan](#utils.ndgan.DCGAN.define_gan)
+    * [summarize\_performance](#utils.ndgan.DCGAN.summarize_performance)
+    * [train\_gan](#utils.ndgan.DCGAN.train_gan)
+* [utils.data\_augmentation](#utils.data_augmentation)
+  * [dataset](#utils.data_augmentation.dataset)
+    * [\_\_init\_\_](#utils.data_augmentation.dataset.__init__)
+* [nets](#nets)
+* [nets.envs](#nets.envs)
+  * [SCI](#nets.envs.SCI)
+    * [data\_flow](#nets.envs.SCI.data_flow)
+    * [init\_seed](#nets.envs.SCI.init_seed)
+    * [compile](#nets.envs.SCI.compile)
+    * [train](#nets.envs.SCI.train)
+    * [inference](#nets.envs.SCI.inference)
+  * [RCI](#nets.envs.RCI)
+    * [data\_flow](#nets.envs.RCI.data_flow)
+    * [compile](#nets.envs.RCI.compile)
+* [nets.dense](#nets.dense)
+  * [Net](#nets.dense.Net)
+    * [\_\_init\_\_](#nets.dense.Net.__init__)
+* [nets.design](#nets.design)
+  * [B\_field\_norm](#nets.design.B_field_norm)
+* [nets.deep\_dense](#nets.deep_dense)
+  * [dmodel](#nets.deep_dense.dmodel)
+    * [\_\_init\_\_](#nets.deep_dense.dmodel.__init__)
+
 <a id="main"></a>
 
 # main
@@ -353,6 +396,31 @@ Builds model, loss, optimizer. Has defaults
 
 # nets.dense
 
+<a id="nets.dense.Net"></a>
+
+## Net Objects
+
+```python
+class Net(nn.Module)
+```
+
+4 layer model, different activations and neurons count on layer
+
+<a id="nets.dense.Net.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(input_dim: int = 2, hidden_dim: int = 200)
+```
+
+Init
+
+**Arguments**:
+
+- `input_dim` _int, optional_ - Defaults to 2.
+- `hidden_dim` _int, optional_ - Defaults to 200.
+
 <a id="nets.design"></a>
 
 # nets.design
@@ -375,4 +443,30 @@ Returns vec B_z
 <a id="nets.deep_dense"></a>
 
 # nets.deep\_dense
+
+<a id="nets.deep_dense.dmodel"></a>
+
+## dmodel Objects
+
+```python
+class dmodel(nn.Module)
+```
+
+4 layers Torch model. Relu activations, hidden layers are same size.
+
+<a id="nets.deep_dense.dmodel.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(in_features=1, hidden_features=200, out_features=1)
+```
+
+Init
+
+**Arguments**:
+
+- `in_features` _int, optional_ - Input features. Defaults to 1.
+- `hidden_features` _int, optional_ - Hidden dims. Defaults to 200.
+- `out_features` _int, optional_ - Output dims. Defaults to 1.
 

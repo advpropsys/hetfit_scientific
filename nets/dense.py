@@ -1,7 +1,16 @@
 from torch import nn
 
 class Net(nn.Module):
+    """4 layer model, different activations and neurons count on layer
+
+    """
     def __init__(self,input_dim:int=2,hidden_dim:int=200):
+        """Init
+
+        Args:
+            input_dim (int, optional): Defaults to 2.
+            hidden_dim (int, optional): Defaults to 200.
+        """
         super(Net,self).__init__()
         self.input = nn.Linear(input_dim,40)
         self.act1 = nn.Tanh()
