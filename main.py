@@ -30,7 +30,9 @@ st.markdown('### tl;dr \n- Create environment'
             '\n #### And yes, it all will work even without any additional arguments from user besides column indexes'
             )
 
-st.metric('Geometry accuracy increase on domain from previous data driven paper',value='83%',delta='15%')
+st.metric('Geometry accuracy on domain vs previous data driven paper',value='83%',delta='15%')
+
+st.header('Example:')
 
 st.markdown('Remeber indexes and column names on this example: $P$ - 1, $d$ - 3, $h$ - 3, $m_a$ - 6,$T$ - 7')
 st.code('run = SCI(*args,**kwargs)')
