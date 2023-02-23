@@ -1,44 +1,45 @@
 # Table of Contents
 
-* [main](#main)
-* [PINN](#PINN)
-* [PINN.pinns](#PINN.pinns)
-  * [PINNd\_p](#PINN.pinns.PINNd_p)
-  * [PINNhd\_ma](#PINN.pinns.PINNhd_ma)
-  * [PINNT\_ma](#PINN.pinns.PINNT_ma)
-* [utils](#utils)
-* [utils.test](#utils.test)
-* [utils.dataset\_loader](#utils.dataset_loader)
-  * [get\_dataset](#utils.dataset_loader.get_dataset)
-* [utils.ndgan](#utils.ndgan)
-  * [DCGAN](#utils.ndgan.DCGAN)
-    * [define\_discriminator](#utils.ndgan.DCGAN.define_discriminator)
-    * [generate\_latent\_points](#utils.ndgan.DCGAN.generate_latent_points)
-    * [define\_gan](#utils.ndgan.DCGAN.define_gan)
-    * [summarize\_performance](#utils.ndgan.DCGAN.summarize_performance)
-    * [train\_gan](#utils.ndgan.DCGAN.train_gan)
-* [utils.data\_augmentation](#utils.data_augmentation)
-  * [dataset](#utils.data_augmentation.dataset)
-    * [\_\_init\_\_](#utils.data_augmentation.dataset.__init__)
-* [nets](#nets)
-* [nets.envs](#nets.envs)
-  * [SCI](#nets.envs.SCI)
-    * [data\_flow](#nets.envs.SCI.data_flow)
-    * [init\_seed](#nets.envs.SCI.init_seed)
-    * [compile](#nets.envs.SCI.compile)
-    * [train](#nets.envs.SCI.train)
-    * [inference](#nets.envs.SCI.inference)
-  * [RCI](#nets.envs.RCI)
-    * [data\_flow](#nets.envs.RCI.data_flow)
-    * [compile](#nets.envs.RCI.compile)
-* [nets.dense](#nets.dense)
-  * [Net](#nets.dense.Net)
-    * [\_\_init\_\_](#nets.dense.Net.__init__)
-* [nets.design](#nets.design)
-  * [B\_field\_norm](#nets.design.B_field_norm)
-* [nets.deep\_dense](#nets.deep_dense)
-  * [dmodel](#nets.deep_dense.dmodel)
-    * [\_\_init\_\_](#nets.deep_dense.dmodel.__init__)
+- [Table of Contents](#table-of-contents)
+- [main](#main)
+- [:orange\[PINN\]](#orangepinn)
+  - [PINN.pinns](#pinnpinns)
+  - [PINNd\_p Objects](#pinnd_p-objects)
+  - [PINNhd\_ma Objects](#pinnhd_ma-objects)
+  - [PINNT\_ma Objects](#pinnt_ma-objects)
+- [:orange\[utils\]](#orangeutils)
+  - [utils.test](#utilstest)
+  - [utils.dataset\_loader](#utilsdataset_loader)
+      - [get\_dataset](#get_dataset)
+  - [utils.ndgan](#utilsndgan)
+    - [DCGAN Objects](#dcgan-objects)
+      - [define\_discriminator](#define_discriminator)
+      - [generate\_latent\_points](#generate_latent_points)
+      - [define\_gan](#define_gan)
+      - [summarize\_performance](#summarize_performance)
+      - [train\_gan](#train_gan)
+  - [utils.data\_augmentation](#utilsdata_augmentation)
+  - [dataset Objects](#dataset-objects)
+      - [\_\_init\_\_](#__init__)
+- [:orange\[nets\]](#orangenets)
+  - [nets.envs](#netsenvs)
+    - [SCI Objects](#sci-objects)
+      - [data\_flow](#data_flow)
+      - [init\_seed](#init_seed)
+      - [compile](#compile)
+      - [train](#train)
+      - [inference](#inference)
+    - [RCI Objects](#rci-objects)
+      - [data\_flow](#data_flow-1)
+      - [compile](#compile-1)
+  - [nets.dense](#netsdense)
+    - [Net Objects](#net-objects)
+      - [\_\_init\_\_](#__init__-1)
+  - [nets.design](#netsdesign)
+      - [B\_field\_norm](#b_field_norm)
+  - [nets.deep\_dense](#netsdeep_dense)
+    - [dmodel Objects](#dmodel-objects)
+      - [\_\_init\_\_](#__init__-2)
 
 <a id="main"></a>
 
@@ -46,11 +47,11 @@
 
 <a id="PINN"></a>
 
-# PINN
+# :orange[PINN]
 
 <a id="PINN.pinns"></a>
 
-# PINN.pinns
+## PINN.pinns
 
 <a id="PINN.pinns.PINNd_p"></a>
 
@@ -84,15 +85,15 @@ $ m_a, U \mapsto T$
 
 <a id="utils"></a>
 
-# utils
+# :orange[utils]
 
 <a id="utils.test"></a>
 
-# utils.test
+## utils.test
 
 <a id="utils.dataset_loader"></a>
 
-# utils.dataset\_loader
+## utils.dataset\_loader
 
 <a id="utils.dataset_loader.get_dataset"></a>
 
@@ -121,11 +122,11 @@ Gets augmented dataset
 
 <a id="utils.ndgan"></a>
 
-# utils.ndgan
+## utils.ndgan
 
 <a id="utils.ndgan.DCGAN"></a>
 
-## DCGAN Objects
+### DCGAN Objects
 
 ```python
 class DCGAN()
@@ -189,7 +190,7 @@ function to train gan model
 
 <a id="utils.data_augmentation"></a>
 
-# utils.data\_augmentation
+## utils.data\_augmentation
 
 <a id="utils.data_augmentation.dataset"></a>
 
@@ -223,15 +224,15 @@ _summary_
 
 <a id="nets"></a>
 
-# nets
+# :orange[nets]
 
 <a id="nets.envs"></a>
 
-# nets.envs
+## nets.envs
 
 <a id="nets.envs.SCI"></a>
 
-## SCI Objects
+### SCI Objects
 
 ```python
 class SCI()
@@ -323,7 +324,7 @@ Inference of (pre-)trained model
 
 <a id="nets.envs.RCI"></a>
 
-## RCI Objects
+### RCI Objects
 
 ```python
 class RCI(SCI)
@@ -376,11 +377,11 @@ Builds model, loss, optimizer. Has defaults
 
 <a id="nets.dense"></a>
 
-# nets.dense
+## nets.dense
 
 <a id="nets.dense.Net"></a>
 
-## Net Objects
+### Net Objects
 
 ```python
 class Net(nn.Module)
@@ -405,7 +406,7 @@ Init
 
 <a id="nets.design"></a>
 
-# nets.design
+## nets.design
 
 <a id="nets.design.B_field_norm"></a>
 
@@ -424,11 +425,11 @@ Returns vec B_z
 
 <a id="nets.deep_dense"></a>
 
-# nets.deep\_dense
+## nets.deep\_dense
 
 <a id="nets.deep_dense.dmodel"></a>
 
-## dmodel Objects
+### dmodel Objects
 
 ```python
 class dmodel(nn.Module)
