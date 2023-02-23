@@ -2,6 +2,11 @@ import streamlit as st
 
 from nets.envs import SCI
 
+
+st.set_page_config(
+        page_title="HET_sci",
+)
+
 st.title('HETfit_scientific')
 st.markdown("#### Imagine a package which was engineered primarly for data driven plasma physics devices design, mainly hall effect thrusters, yup that's it"
             "\n### :orange[Don't be scared away though, it has much simpler interface than anything you ever used for such designs]")
@@ -24,6 +29,8 @@ st.markdown('### tl;dr \n- Create environment'
             '\n - Inference, plot, performance, ex. ```run.plot3d()```'
             '\n #### And yes, it all will work even without any additional arguments from user besides column indexes'
             )
+
+st.metric('Geometry accuracy increase on domain from previous data driven paper',value='83%',delta='15%')
 
 st.markdown('Remeber indexes and column names on this example: $P$ - 1, $d$ - 3, $h$ - 3, $m_a$ - 6,$T$ - 7')
 st.code('run = SCI(*args,**kwargs)')
