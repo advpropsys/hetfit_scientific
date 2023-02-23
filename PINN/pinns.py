@@ -2,19 +2,16 @@ from torch import nn,tensor
 import numpy as np
 import seaborn as sns
 class PINNd_p(nn.Module):
+    """_summary_
+
+    Args:
+        nn (_type_): _description_
+    """
     def __init__(self):
         super(PINNd_p,self).__init__()
         weights = tensor([60.,0.5])
         self.weights = nn.Parameter(weights)
     def forward(self,x):
-        """P,U input, d output
-
-        Args:
-            x (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
         c,b = self.weights
         x1 = (x[0]/(c*x[1]))**0.5
         return x1
