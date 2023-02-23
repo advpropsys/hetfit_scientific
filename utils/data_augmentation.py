@@ -16,12 +16,12 @@ class dataset():
     """ Creates dataset from input source
     """
     def __init__(self,number_samples:int, name:str,source:str,boundary_conditions:list=None):
-        """_summary_
+        """ Init
 
         Args:
-            number_samples (int): _description_
-            name (str): _description_
-            source (str): _description_
+            number_samples (int): number of samples to be genarated
+            name (str): name of dataset
+            source (str): source file
             boundary_conditions (list): y1,y2,x1,x2
         """
         self.sample_size = number_samples
