@@ -6,7 +6,7 @@ from nets.envs import SCI
 st.set_page_config(
         page_title="HET_sci",
         menu_items={
-            'My portfolio':'https://advpropsys.github.io'
+            'About':'https://advpropsys.github.io'
         }
 )
 
