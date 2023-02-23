@@ -15,7 +15,27 @@ from sklearn.linear_model import SGDRegressor
 from sklearn.feature_selection import SelectFromModel
 
 class SCI(): #Scaled Computing Interface
+    """ Scaled computing interface.
+    Args:
+            hidden_dim (int, optional): Max demension of hidden linear layer. Defaults to 200. Should be >80 in not 1d case
+            dropout (bool, optional): LEGACY, don't use. Defaults to True.
+            epochs (int, optional): Optionally specify epochs here, but better in train. Defaults to 10.
+            dataset (str, optional): dataset to be selected from ./data. Defaults to 'test.pkl'. If name not exists, code will generate new dataset with upcoming parameters.
+            sample_size (int, optional): Samples to be generated (note: BEFORE applying boundary conditions). Defaults to 1000.
+            source (str, optional): Source from which data will be generated. Better to not change. Defaults to 'dataset.csv'.
+            boundary_conditions (list, optional): If sepcified, whole dataset will be cut rectangulary. Input list is [ymin,ymax,xmin,xmax] type. Defaults to None.
+    """
     def __init__(self, hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',sample_size:int=1000,source:str='dataset.csv',boundary_conditions:list=None):
+        """Init
+        Args:
+            hidden_dim (int, optional): Max demension of hidden linear layer. Defaults to 200. Should be >80 in not 1d case
+            dropout (bool, optional): LEGACY, don't use. Defaults to True.
+            epochs (int, optional): Optionally specify epochs here, but better in train. Defaults to 10.
+            dataset (str, optional): dataset to be selected from ./data. Defaults to 'test.pkl'. If name not exists, code will generate new dataset with upcoming parameters.
+            sample_size (int, optional): Samples to be generated (note: BEFORE applying boundary conditions). Defaults to 1000.
+            source (str, optional): Source from which data will be generated. Better to not change. Defaults to 'dataset.csv'.
+            boundary_conditions (list, optional): If sepcified, whole dataset will be cut rectangulary. Input list is [ymin,ymax,xmin,xmax] type. Defaults to None.
+        """
         self.type:str = 'legacy'
         self.seed:int = 449
         self.dim = hidden_dim
@@ -26,6 +46,14 @@ class SCI(): #Scaled Computing Interface
         self.input_dim_for_check = 0
         
     def feature_gen(self, base:bool=True, fname:str=None,index:int=None,func=None) -> None:
+        """ Generate new features. If base true, generates most obvious ones. You can customize this by adding 
+        new feature as name of column - fname, index of parent column, and lambda function which needs to be applied elementwise.
+        Args:
+            base (bool, optional):  Defaults to True.
+            fname (str, optional): Name of new column. Defaults to None.
+            index (int, optional): Index of parent column. Defaults to None.
+            func (_type_, optional): lambda function. Defaults to None.
+        """
         
         if base:
             self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
@@ -37,6 +65,16 @@ class SCI(): #Scaled Computing Interface
             self.df[fname] = self.df.iloc[:,index].apply(func)
         
     def feature_importance(self,X:pd.DataFrame,Y:pd.Series,verbose:int=1):
+        """ Gets feature importance by SGD regression and score selection. Default threshold is 1.25*mean
+        input X as self.df.iloc[:,(columns of choice)]
+              Y as self.df.iloc[:,(column of choice)]
+        Args:
+            X (pd.DataFrame): Builtin DataFrame
+            Y (pd.Series): Builtin Series
+            verbose (int, optional): either to or to not print actual report. Defaults to 1.
+        Returns:
+            Report (str)
+        """
         
         mod = SGDRegressor()
         
@@ -54,7 +92,7 @@ class SCI(): #Scaled Computing Interface
         
     def data_flow(self,columns_idx:tuple = (1,3,3,5), idx:tuple=None, split_idx:int = 800) -> torch.utils.data.DataLoader:
         """ Data prep pipeline
-
+        It is called automatically, don't call it in your code.
         Args:
             columns_idx (tuple, optional): Columns to be selected (sliced 1:2 3:4) for feature fitting. Defaults to (1,3,3,5). 
             idx (tuple, optional): 2|3 indexes to be selected for feature fitting. Defaults to None. Use either idx or columns_idx (for F:R->R idx, for F:R->R2 columns_idx)
@@ -117,12 +155,11 @@ class SCI(): #Scaled Computing Interface
         """ Builds model, loss, optimizer. Has defaults
         Args:
             columns (tuple, optional): Columns to be selected for feature fitting. Defaults to (1,3,3,5).
-            optim - torch Optimizer
-            loss - torch Loss function (nn)
+            optim - torch Optimizer. Default AdamW
+            loss - torch Loss function (nn). Defaults to L1Loss
         """
         
         self.columns = columns
-
         
                 
         if not(columns):
@@ -161,6 +198,8 @@ class SCI(): #Scaled Computing Interface
     def train(self,epochs:int=10) -> None:
         """ Train model
         If sklearn instance uses .fit()
+        
+        epochs - optional
         """
         if 'sklearn' in str(self.model.__class__):
             self.model.fit(np.array(self.X),np.array(self.Y))
@@ -192,14 +231,16 @@ class SCI(): #Scaled Computing Interface
         torch.onnx.export(self.model,self.X,path)
         
     def jit_export(self,path:str='./models/model.pt'):
+        """Exports properly defined model to jit
+        Args:
+            path (str, optional): path to models. Defaults to './models/model.pt'.
+        """
         torch.jit.save(self.model,path)
         
     def inference(self,X:tensor, model_name:str=None) -> np.ndarray:
         """ Inference of (pre-)trained model
-
         Args:
             X (tensor): your data in domain of train
-
         Returns:
             np.ndarray: predictions
         """
@@ -214,15 +255,20 @@ class SCI(): #Scaled Computing Interface
         return self.model(X).detach().numpy()
 
     def plot(self):
+        """ Automatic 2d plot
+        """
         self.model.eval()
         print(self.Y.shape,self.model(self.X).detach().numpy().shape,self.X.shape)
         if self.X.shape[-1] != self.model(self.X).detach().numpy().shape[-1]:
-            print('Size mismatch, try 3d plot, plotting by second dim of largest tensor')
-            plt.scatter(self.X[:,1],self.model(self.X).detach().numpy(),label='predicted',s=2)
+            print('Size mismatch, try 3d plot, plotting by first dim of largest tensor')
+            if len(self.X.shape)==1:
+                X = self.X
+            else: X = self.X[:,0]
+            plt.scatter(X,self.model(self.X).detach().numpy(),label='predicted',s=2)
             if self.Y.shape[-1]!=1:
-                plt.scatter(self.X[:,1],self.Y[:,1],s=1,label='real')
+                plt.scatter(X,self.Y[:,1],s=1,label='real')
             else:
-                plt.scatter(self.X[:,1],self.Y,s=1,label='real')
+                plt.scatter(X,self.Y,s=1,label='real')
             plt.xlabel(rf'${self.column_names[0]}$')
             plt.ylabel(rf'${self.column_names[1]}$')
             plt.legend()
@@ -234,6 +280,10 @@ class SCI(): #Scaled Computing Interface
             plt.legend()
         
     def plot3d(self):
+        """ Plot of inputs and predicted data in mesh format
+        Returns:
+            plotly plot
+        """
         X = self.X
         self.model.eval()
         x = X[:,0].numpy().ravel()
@@ -253,18 +303,31 @@ class SCI(): #Scaled Computing Interface
         # surf.show()
         
         return surf
-    
     def performance(self,c=0.4) -> dict:
+        """ Automatic APE based performance if applicable, else returns nan
+        Args:
+             c (float, optional): ZDE mitigation constant. Defaults to 0.4.
+        Returns:
+            dict: {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
+        """
         a=[]
         for i in range(1000):
             a.append(100-abs(np.mean(self.df.iloc[1:24,1:8].values-self.df.iloc[24:,1:8].sample(23).values)/(self.Y.numpy()[1:]+c))*100)
-    
         gen_acc = np.mean(a)
         ape = (100-abs(np.mean(self.model(self.X).detach().numpy()-self.Y.numpy()[1:])*100))
         abs_ape = ape*gen_acc/100
         return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
     
     def performance_super(self,c=0.4,real_data_column_index:tuple = (1,8),real_data_samples:int=23, generated_length:int=1000) -> dict:
+        """Performance by custom parameters. APE loss
+        Args:
+            c (float, optional): ZDE mitigation constant. Defaults to 0.4.
+            real_data_column_index (tuple, optional): Defaults to (1,8).
+            real_data_samples (int, optional): Defaults to 23.
+            generated_length (int, optional): Defaults to 1000.
+        Returns:
+            dict: {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
+        """
         a=[]
         for i in range(1000):
             a.append(100-abs(np.mean(self.df.iloc[1:real_data_samples+1,real_data_column_index[0]:real_data_column_index[1]].values-self.df.iloc[real_data_samples+1:,real_data_column_index[0]:real_data_column_index[1]].sample(real_data_samples).values)/(self.Y.numpy()[1:]+c))*100)
@@ -275,12 +338,15 @@ class SCI(): #Scaled Computing Interface
     
     
 class RCI(SCI): #Real object interface
+    """ Real values interface, uses different types of NN, NO scaling.
+    Parent:
+        SCI()
+    """
     def __init__(self,*args,**kwargs):
         super(RCI,self).__init__()
         
     def data_flow(self,columns_idx:tuple = (1,3,3,5), idx:tuple=None, split_idx:int = 800) -> torch.utils.data.DataLoader:
             """ Data prep pipeline
-
             Args:
                 columns_idx (tuple, optional): Columns to be selected (sliced 1:2 3:4) for feature fitting. Defaults to (1,3,3,5). 
                 idx (tuple, optional): 2|3 indexes to be selected for feature fitting. Defaults to None. Use either idx or columns_idx (for F:R->R idx, for F:R->R2 columns_idx)
@@ -296,9 +362,7 @@ class RCI(SCI): #Real object interface
             
             self.split_idx=split_idx
             
-            
-           
-            
+                        
             if idx!=None:
                 self.len_idx = len(idx)
                 if len(idx)==2:
@@ -313,7 +377,7 @@ class RCI(SCI): #Real object interface
                 self.Y = tensor(self.df.iloc[:,columns_idx[2]:columns_idx[3]].values[:split_idx].astype(float)).float()
             self.Y = self.Y.abs()
             self.X = self.X.abs()
-              
+            
             print('Shapes for debug: (X,Y)',self.X.shape, self.Y.shape)
             train_data = torch.utils.data.TensorDataset(self.X, self.Y)
             Xtrain = torch.utils.data.DataLoader(train_data,batch_size=batch_size)
@@ -336,7 +400,6 @@ class RCI(SCI): #Real object interface
         """
         
         self.columns = columns
-
         
                 
         if not(columns):
@@ -360,6 +423,8 @@ class RCI(SCI): #Real object interface
         if self.input_dim_for_check == 1:
             self.X  = self.X.reshape(-1,1)
     def plot(self):
+        """ Plots 2d plot of prediction vs real values
+        """
         self.model.eval()
         if 'PINN' in str(self.model.__class__):
             self.preds=np.array([])
@@ -367,12 +432,16 @@ class RCI(SCI): #Real object interface
                 self.preds = np.append(self.preds,self.model(i).detach().numpy()) 
         print(self.Y.shape,self.preds.shape,self.X.shape)
         if self.X.shape[-1] != self.preds.shape[-1]:
-            print('Size mismatch, try 3d plot, plotting by second dim of largest tensor')
-            plt.scatter(self.X[:,1],self.preds,label='predicted',s=2)
+            print('Size mismatch, try 3d plot, plotting by first dim of largest tensor')
+            try: X = self.X[:,0]
+            except:
+                X = self.X
+                pass
+            plt.scatter(X,self.preds,label='predicted',s=2)
             if self.Y.shape[-1]!=1:
-                sns.scatterplot(x=self.X[:,1],y=self.Y,s=2,label='real')
+                sns.scatterplot(x=X,y=self.Y,s=2,label='real')
             else:
-                sns.scatterplot(x=self.X[:,1],y=self.Y,s=1,label='real')
+                sns.scatterplot(x=X,y=self.Y,s=1,label='real')
             plt.xlabel(rf'${self.column_names[0]}$')
             plt.ylabel(rf'${self.column_names[1]}$')
             plt.legend()
@@ -384,6 +453,12 @@ class RCI(SCI): #Real object interface
             plt.legend()
             
     def performance(self,c=0.4) -> dict:
+        """RCI performnace. APE errors.
+        Args:
+            c (float, optional): correction constant to mitigate division by 0 error. Defaults to 0.4.
+        Returns:
+            dict: {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
+        """
         a=[]
         for i in range(1000):
             dfcopy = (self.df.iloc[:,1:8]-self.df.iloc[:,1:8].min())/(self.df.iloc[:,1:8].max()-self.df.iloc[:,1:8].min())
@@ -393,9 +468,4 @@ class RCI(SCI): #Real object interface
         ape = (100-abs(np.mean(self.preds-self.Y.numpy())*100))
         abs_ape = ape*gen_acc/100
         return {'Generator_Accuracy, %':np.mean(a),'APE_abs, %':abs_ape,'Model_APE, %': ape}
-    
-    
-        
-    
-            
     
