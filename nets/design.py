@@ -28,4 +28,3 @@ def PUdesign(P,U):
     g.set_yscale("log")
     return df
     
-    
