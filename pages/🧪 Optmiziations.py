@@ -14,5 +14,6 @@ def study():
     st.markdown('### :orange[Most recent run:]')
     st.write(run)
 if st.button('Start study',use_container_width=True):
+    st.info('Study is running',icon='🔄')
     study()
     
