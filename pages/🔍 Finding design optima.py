@@ -32,7 +32,7 @@ st.code("""
 a.compile(idx=(1,2,3,4,5,7,-1))
 a.train()
 st.markdown(
-            "\n We select the $P,U,d,h,L,T$ columns for this case. As we know the geometry and needed thrust."
+            "\n #### We select the $P,U,d,h,L,T$ columns for this case. As we know the geometry and needed thrust."
             "\n---\n"
             " Now we will assemble 2d matrix where rows are $n_t$ values and i,j (U,d) are changing. $h = 0.242*d$ as per PINN, L is approximated to be 2h, T - const = 0.3")
 
