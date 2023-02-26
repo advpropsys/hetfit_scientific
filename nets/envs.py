@@ -176,6 +176,8 @@ class SCI(): #Scaled Computing Interface
             
         if custom:
             self.model = model()
+            self.loss_function = loss()
+            self.optim = optim(self.model.parameters(), lr=lr)
             if self.len_idx == 2:
                 self.input_dim_for_check = 1
         else: 
@@ -265,7 +267,7 @@ class SCI(): #Scaled Computing Interface
                 X = self.X
             else: X = self.X[:,0]
             plt.scatter(X,self.model(self.X).detach().numpy(),label='predicted',s=2)
-            if self.Y.shape[-1]!=1:
+            if len(self.Y.shape)!=1:
                 plt.scatter(X,self.Y[:,1],s=1,label='real')
             else:
                 plt.scatter(X,self.Y,s=1,label='real')
