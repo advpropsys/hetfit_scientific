@@ -13,7 +13,8 @@ def study():
     run = api.start_study(50)
     st.success('Study Finished!',icon='✅')
     st.markdown('### :orange[Most recent run:]')
-    st.write(run)
+    st.write(run[0])
+    st.write(run[1:])
 if st.button('Start study',use_container_width=True):
     st.info('Study is running',icon='🔄')
     study()
