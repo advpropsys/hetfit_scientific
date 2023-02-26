@@ -74,12 +74,12 @@ fig.show(config={'modeBarButtonsToAdd':['drawline',
                                        ]})
         """)
 
-fig = px.imshow(np.array(y),labels={r'x':r'$U_s$',r'y':r'$d_s$',r'color':r'$\eta_t$'},title=r'$U_s,d_s \mapsto \eta_t \text{at} P,h,L,T \text{Invariants}$')
+fig = px.imshow(np.array(y),labels={r'x':r'U',r'y':r'd',r'color':r'n_t'},title=r'U,d -> n_t at P,h,L,T Invariants')
 fig.update_layout(
     dragmode='drawrect', # define dragmode
     newshape=dict(line_color='cyan'))
 # Add modebar buttons
-st.components.v1.html(fig.to_html(include_mathjax='cdn'),height=600)
+st.write(fig,include_mathjax='cdn')
 
 st.markdown('---\nUsing this strategy we just have assembled model for $U,d \mapsto n_t$ with other design variables as invariants. It also can be done another way by overlaying predictions of two varibles models.')
 
@@ -95,7 +95,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'$U_s$',r'y':r'$d_s$',r'color':r'$\nu_t$'},title=r'$U_s,d_s \mapsto \nu_t$')
+    fig = px.imshow(np.array(y),labels={r'x':r'U',r'y':r'd',r'color':r'n_t'},title=r'U,d -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
@@ -112,7 +112,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'$d_s$',r'y':r'$h_s$',r'color':r'$\nu_t$'},title=r'$d_s,h_s \mapsto \nu_t$')
+    fig = px.imshow(np.array(y),labels={r'x':r'd',r'y':r'h',r'color':r'n_t'},title=r'd,h -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
@@ -132,7 +132,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'$m_{as}$',r'y':r'$T$',r'color':r'$\nu_t$'},title=r'$m_{as},T \mapsto \nu_t$')
+    fig = px.imshow(np.array(y),labels={r'x':r'm_a',r'y':r'T',r'color':r'n_t'},title=r'm_a,T -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
@@ -150,7 +150,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'$T$',r'y':r'$I_{sp}$',r'color':r'$\nu_t$'}, title=r'$T,I_{sp} \mapsto \nu_t$')
+    fig = px.imshow(np.array(y),labels={r'x':r'T',r'y':r'Isp',r'color':r'n_t'}, title=r'T,Isp -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
