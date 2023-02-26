@@ -25,7 +25,7 @@ a = SCI()
 a.feature_gen()
 a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
         
-st.markdown('\n As you can see it is possible to access every bit of data you are working on via simple HETFit interface \n ---')
+st.markdown('\n As you can see it is possible to access every bit of data you are working on via simple HETFit interface\n---')
 st.code("""
         a.compile(idx=(1,2,3,4,5,7,-1))\na.train()
         """)
