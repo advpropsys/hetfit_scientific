@@ -112,7 +112,7 @@ class SCI(): #Scaled Computing Interface
                 self.Y = tensor(self.df.iloc[:,idx[1]].values[:split_idx]).float()
                 batch_size = 1
             else:
-                self.X = tensor(self.df.iloc[:,[idx[0],idx[1]]].values[:split_idx,:]).float()
+                self.X = tensor(self.df.iloc[:,[*idx[:-1]]].values[:split_idx,:]).float()
                 self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx]).float()
         else:
             self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:]).float()
@@ -123,7 +123,7 @@ class SCI(): #Scaled Computing Interface
         Xtrain = torch.utils.data.DataLoader(train_data,batch_size=batch_size)
         self.input_dim = self.X.size(-1)
         self.indexes = idx if idx else columns_idx
-        self.column_names = [ self.df.columns[i] for i in self.indexes ]
+        self.column_names = [self.df.columns[i] for i in self.indexes]
         return Xtrain
         
     def init_seed(self,seed):
@@ -151,7 +151,7 @@ class SCI(): #Scaled Computing Interface
                 self.loss_history.append(loss.data.item())
                 self.ape_history.append(None if ape_norm >1 else ape_norm)
                 
-    def compile(self,columns:tuple=None,idx:tuple=None, optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = dmodel, custom:bool=False) -> None:
+    def compile(self,columns:tuple=None,idx:tuple=None, optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = dmodel, custom:bool=False, lr:float=0.0001) -> None:
         """ Builds model, loss, optimizer. Has defaults
         Args:
             columns (tuple, optional): Columns to be selected for feature fitting. Defaults to (1,3,3,5).
@@ -187,7 +187,7 @@ class SCI(): #Scaled Computing Interface
             if (self.len_idx == 0) or self.columns:
                 self.model = Net(input_dim=self.input_dim,hidden_dim=self.dim).float()
                 
-            self.optim = optim(self.model.parameters(), lr=0.001)
+            self.optim = optim(self.model.parameters(), lr=lr)
             self.loss_function = loss()
             
         if self.input_dim_for_check:
@@ -279,19 +279,19 @@ class SCI(): #Scaled Computing Interface
             plt.ylabel(r'$Y$')
             plt.legend()
         
-    def plot3d(self):
+    def plot3d(self,colX=0,colY=1):
         """ Plot of inputs and predicted data in mesh format
         Returns:
             plotly plot
         """
         X = self.X
         self.model.eval()
-        x = X[:,0].numpy().ravel()
-        y = X[:,1].numpy().ravel()
+        x = X[:,colX].numpy().ravel()
+        y = X[:,colY].numpy().ravel()
         z = self.model(X).detach().numpy().ravel()
         surf = px.scatter_3d(x=x, y=y,z=self.df.iloc[:,self.indexes[-1]].values[:self.split_idx],opacity=0.3,
-                             labels={'x':f'{self.column_names[0]}',
-                                     'y':f'{self.column_names[1]}',
+                             labels={'x':f'{self.column_names[colX]}',
+                                     'y':f'{self.column_names[colY]}',
                                      'z':f'{self.column_names[-1]}'
                                      },title='Mesh prediction plot'
                             )
