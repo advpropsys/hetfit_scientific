@@ -30,22 +30,21 @@ st.code("""
         """)
 a.compile(idx=(1,2,3,4,5,7,-1))
 a.train()
-st.markdown("""---\n
-            #### We select the $P,U,d,h,L,T$ columns for this case. As we know the geometry and needed thrust.
-            \n---
-            #### Now we will assemble 2d matrix where rows are $n_t$ values and i,j (U,d) are changing. $h = 0.242*d$ as per PINN, L is approximated to be 2h, T - const = 0.3
-            """)
+st.markdown("---\n"
+            "#### We select the $P,U,d,h,L,T$ columns for this case. As we know the geometry and needed thrust."
+            "\n---"
+            "#### Now we will assemble 2d matrix where rows are $n_t$ values and i,j (U,d) are changing. $h = 0.242*d$ as per PINN, L is approximated to be 2h, T - const = 0.3")
 
 st.code("""
-        from torch import tensor
-        import numpy as np
+from torch import tensor
+import numpy as np
 
-        y=[]
-        for i in np.arange(0.1,0.8,0.01):
-                x=[]
-                for j in np.arange(0.1,0.8,0.01):
-                        x.append(a.inference(tensor([0.25,float(i),float(j),float(j*0.242),2*float(j*0.242),0.3])).item())
-                y.append(x)
+y=[]
+for i in np.arange(0.1,0.8,0.01):
+    x=[]
+    for j in np.arange(0.1,0.8,0.01):
+        x.append(a.inference(tensor([0.25,float(i),float(j),float(j*0.242),2*float(j*0.242),0.3])).item())
+    y.append(x)
         
         """)
 st.markdown('---')
@@ -61,12 +60,12 @@ for i in np.arange(0.1,0.8,0.01):
                 
 st.markdown("Now we plot and analyze: Seems like you need higher voltages and HET diamater for higher efficiencies.\n---")
 st.code("""
-        fig = px.imshow(np.array(y),labels={r'x':r'$d_s$',r'y':r'$U_s$',r'color':r'$n_t$'})
-        fig.update_layout(
-            dragmode='drawrect', # define dragmode
-            newshape=dict(line_color='cyan'))
-        # Add modebar buttons
-        fig.show(config={'modeBarButtonsToAdd':['drawline',
+fig = px.imshow(np.array(y),labels={r'x':r'$d_s$',r'y':r'$U_s$',r'color':r'$n_t$'})
+fig.update_layout(
+    dragmode='drawrect', # define dragmode
+    newshape=dict(line_color='cyan'))
+# Add modebar buttons
+fig.show(config={'modeBarButtonsToAdd':['drawline',
                                         'drawopenpath',
                                         'drawclosedpath',
                                         'drawrect',
