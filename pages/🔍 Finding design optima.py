@@ -79,7 +79,7 @@ fig.update_layout(
     dragmode='drawrect', # define dragmode
     newshape=dict(line_color='cyan'))
 # Add modebar buttons
-st.components.v1.html(fig.to_html(include_mathjax='cdn'))
+st.components.v1.html(fig.to_html(include_mathjax='cdn'),height=600)
 
 st.markdown('---\nUsing this strategy we just have assembled model for $U,d \mapsto n_t$ with other design variables as invariants. It also can be done another way by overlaying predictions of two varibles models.')
 
