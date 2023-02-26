@@ -12,6 +12,7 @@ import torch.utils.data
 from torchmetrics import R2Score
 import neptune.new as neptune
 import neptune.new.integrations.optuna as outils
+from optuna.visualization import plot_contour, plot_optimization_history,plot_parallel_coordinates
 
 DEVICE = torch.device("cpu")
 BATCHSIZE = 2
@@ -157,4 +158,6 @@ class Hyper(SCI):
                 "  Number of complete trials: ": len(complete_trials),
                 "Best trial score" : self.trial.value,
                 "  Params: ": self.trial.params
-        }
+        },plot_contour(study, params=["lr", "n_layers"]),\
+        plot_optimization_history(study),\
+        plot_parallel_coordinate(study)

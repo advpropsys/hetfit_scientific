@@ -1,7 +1,8 @@
 from nets.opti.blackbox import Hyper
 import streamlit as st
 
-
+with open('bb.md','r+') as f:
+    st.markdown(f.read(),unsafe_allow_html=True)
 
 st.code('from nets.opti.blackbox import Hyper')
 st.code('api = Hyper(**kwargs)')
