@@ -3,7 +3,6 @@ import streamlit as st
 
 
 
-st
 st.code('from nets.opti.blackbox import Hyper')
 st.code('api = Hyper(**kwargs)')
 api = Hyper()
