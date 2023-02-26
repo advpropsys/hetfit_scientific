@@ -21,13 +21,17 @@ N_TRAIN_EXAMPLES = BATCHSIZE * 10
 N_VALID_EXAMPLES = BATCHSIZE * 10
 
 class Hyper(SCI):
+    """ Hyper parameter tunning class. Allows to generate best NN architecture for task. Inputs are column indexes. idx[-1] is targeted value.
+
+    
+    """
     def __init__(self,idx:tuple=(1,3,7),*args, **kwargs):
         super(Hyper,self).__init__()
         self.loader = self.data_flow(idx=idx)
         
-    # call self dataflow
+        # call self dataflow
     def define_model(self,trial):
-    # We optimize the number of layers, hidden units and 
+        # We optimize the number of layers, hidden units and 
         n_layers = trial.suggest_int("n_layers", 2, 6)
         layers = []
 
@@ -104,7 +108,16 @@ class Hyper(SCI):
         return accuracy
     
     def start_study(self,n_trials:int=100,neptune_project:str=None,neptune_api:str=None):
-        
+        """ Starts study. Optionally provide your neptune repo and token for report generation.
+
+        Args:
+            n_trials (int, optional): Number of iterations. Defaults to 100.
+            neptune_project (str, optional): . Defaults to None.
+            neptune_api (str, optional):. Defaults to None.
+
+        Returns:
+            dict: quick report of results
+        """
         
         study = optuna.create_study(direction="maximize")
         if neptune_project and neptune_api:
