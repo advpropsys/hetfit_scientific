@@ -38,4 +38,5 @@ def PUdesign(P:float,U:float) -> pd.DataFrame:
     g.set_yscale("log")
     return df
     
-    
+def cathode_erosion():
+    pass
