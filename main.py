@@ -54,7 +54,7 @@ st.markdown(' As we can see only $h$ and $d$ passed for $m_a$ model, not only th
 st.code('run.compile(idx=(1,3,7))')
 run.compile(idx=(1,3,7))
 st.code('run.train(epochs=10)')
-if st.button('Start Training',icon='⏳',use_container_width=True):
+if st.button('Start Training⏳',use_container_width=True):
     run.train(epochs=10)
 st.code('run.plot3d()')
 st.write(run.plot3d())
