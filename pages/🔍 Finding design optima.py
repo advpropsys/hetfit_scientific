@@ -3,8 +3,8 @@ import plotly.io as pio
 pio.renderers.default='jupyterlab'
 
 st.markdown('## :orange[Finding optimal HET design]')
-st.markdown('Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $d{B}/d{z}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
-st.markdown('We are generating new features and specifying new domain based on $n_t$ value ')
+st.markdown('#### Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $d{B}/d{z}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
+st.markdown('#### We are generating new features and specifying new domain based on $n_t$ value ')
 st.code("""
 from nets.envs import SCI
 import torch
@@ -25,7 +25,7 @@ a = SCI()
 a.feature_gen()
 a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
         
-st.markdown('---\n As you can see it is possible to access every bit of data you are working on via simple HETFit interface \n ---')
+st.markdown('---\n #### As you can see it is possible to access every bit of data you are working on via simple HETFit interface \n ---')
 st.code("""
         a.compile(idx=(1,2,3,4,5,7,-1))\na.train()
         """)
@@ -59,7 +59,7 @@ for i in np.arange(0.1,0.8,0.01):
                         x.append(a.inference(tensor([0.25,float(i),float(j),float(j*0.242),2*float(j*0.242),0.3])).item())
                 y.append(x)
                 
-st.markdown("Now we plot and analyze: Seems like you need higher voltages and HET diamater for higher efficiencies.\n---")
+st.markdown("#### Now we plot and analyze: Seems like you need higher voltages and channel diamater for higher efficiencies.\n---")
 st.code("""
 fig = px.imshow(np.array(y),labels={r'x':r'$d_s$',r'y':r'$U_s$',r'color':r'$n_t$'})
 fig.update_layout(
