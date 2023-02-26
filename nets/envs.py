@@ -186,7 +186,7 @@ class SCI(): #Scaled Computing Interface
                 self.input_dim_for_check = 1
             if self.len_idx == 3:
                 self.model = Net(input_dim=2,hidden_dim=self.dim).float()
-            if (self.len_idx == 0) or self.columns:
+            if (self.len_idx != 2 or 3) or self.columns:
                 self.model = Net(input_dim=self.input_dim,hidden_dim=self.dim).float()
                 
             self.optim = optim(self.model.parameters(), lr=lr)

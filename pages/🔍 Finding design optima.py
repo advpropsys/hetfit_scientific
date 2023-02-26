@@ -18,7 +18,7 @@ from nets.envs import SCI
 import torch
 from nets.design import B_field_norm
 data = B_field_norm(0.0002,14,k=16)
-fig = px.line(y=data[1],x=data[0],labels={'y':'B','x':'z/L'})
+fig = px.line(y=data[1],x=data[0],labels={'y':'B','x':'L'})
 st.write(fig)
 a = SCI()
 a.feature_gen()
