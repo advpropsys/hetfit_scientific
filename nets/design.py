@@ -14,7 +14,7 @@ def B_field_norm(Bmax:float,L:float,k:int=16,plot=True) -> np.array:
     B = Bmax * np.exp(-k * (z/(1.2*L) - 1)**2)
     if plot:
         sns.lineplot(x=z,y=B)
-    return B
+    return z,B
 
 def PUdesign(P:float,U:float) -> pd.DataFrame:
     """Computes design via numerical model, uses fits from PINNs
