@@ -64,12 +64,12 @@ else:
     st.markdown('#')
     
 st.markdown('---\nTry it out yourself! Select a column from 1 to 10')
-numcol,button = st.columns(2)
 
-number = numcol.number_input('Here',min_value=1, max_value=10, step=1)
+
+number = st.number_input('Here',min_value=1, max_value=10, step=1)
 
 if number:
-    if button.button('Compile And Train💅',use_container_width=True):
+    if st.button('Compile And Train💅',use_container_width=True):
         st.code(f'run.compile(idx=(1,3,{number}))')
         run.compile(idx=(1,3,number))
         st.code('run.train(epochs=10)')
