@@ -63,7 +63,7 @@ if st.button('Start Training⏳',use_container_width=True):
 else:
     st.markdown('#')
     
-st.write('--\nTry it out yourself! Select a column from 1 to 10')
+st.markdown('---\nTry it out yourself! Select a column from 1 to 10')
 numcol,button = st.columns(2)
 
 number = numcol.number_input('Here',min_value=1, max_value=10, step=1)
