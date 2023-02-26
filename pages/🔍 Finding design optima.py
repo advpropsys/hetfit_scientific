@@ -17,7 +17,7 @@ import plotly.express as px
 from nets.envs import SCI
 import torch
 from nets.design import B_field_norm,PUdesign
-fig = px.line(B_field_norm(0.0002,14,k=16),labels={'y':'B'})
+fig = px.line(y=B_field_norm(0.0002,14,k=16),labels={'y':'B','x':'z/L'})
 st.write(fig)
 a = SCI()
 a.feature_gen()
