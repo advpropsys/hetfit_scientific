@@ -1,17 +1,19 @@
 import streamlit as st
-
+import plotly.io as pio
+st.write(pio.renderers)
+pio.renderers.default='browser'
 
 st.markdown('## :orange[Finding optimal HET design]')
 st.markdown('Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $d{B}/d{z}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
 st.markdown('We are generating new features and specifying new domain based on $n_t$ value ')
 st.code("""
-        from nets.envs import SCI
-        import torch
-        from nets.design import B_field_norm,PUdesign
-        B = B_field_norm(0.0002,14,k=16)
-        a = SCI()
-        a.feature_gen()
-        a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
+from nets.envs import SCI
+import torch
+from nets.design import B_field_norm,PUdesign
+B = B_field_norm(0.0002,14,k=16)
+a = SCI()
+a.feature_gen()
+a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
         """)
 import plotly.express as px
 from nets.envs import SCI
@@ -73,7 +75,7 @@ fig.show(config={'modeBarButtonsToAdd':['drawline',
                                        ]})
         """)
 
-fig = px.imshow(np.array(y),labels={r'x':r'$U_s$',r'y':r'$d_s$',r'color':r'$\nu_t$'},title=r'$U_s,d_s \mapsto \nu_t \text{at} P,h,L,T \text{Invariants}$')
+fig = px.imshow(np.array(y),labels={r'x':r'$U_s$',r'y':r'$d_s$',r'color':r'$\eta_t$'},title=r'$U_s,d_s \mapsto \eta_t \text{at} P,h,L,T \text{Invariants}$')
 fig.update_layout(
     dragmode='drawrect', # define dragmode
     newshape=dict(line_color='cyan'))
