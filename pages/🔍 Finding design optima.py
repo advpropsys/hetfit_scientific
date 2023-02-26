@@ -13,11 +13,12 @@ st.code("""
         a.feature_gen()
         a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
         """)
-
+import plotly.express as px
 from nets.envs import SCI
 import torch
 from nets.design import B_field_norm,PUdesign
-st.write(px.line(B_field_norm(0.0002,14,k=16)))
+fig = px.line(B_field_norm(0.0002,14,k=16))
+st.write(fig)
 a = SCI()
 a.feature_gen()
 a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
@@ -72,7 +73,7 @@ st.code("""
                                         'eraseshape'
                                        ]})
         """)
-import plotly.express as px
+
 fig = px.imshow(np.array(y),labels={r'x':r'$U_s$',r'y':r'$d_s$',r'color':r'$\nu_t$'},title=r'$U_s,d_s \mapsto \nu_t \text{at} P,h,L,T \text{Invariants}$')
 fig.update_layout(
     dragmode='drawrect', # define dragmode
