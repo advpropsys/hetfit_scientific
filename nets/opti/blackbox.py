@@ -138,4 +138,10 @@ class Hyper(SCI):
             
         if neptune_api and neptune_project:
             run.stop()
-        
+            
+        return {"  Number of finished trials: ":len(study.trials),
+                "  Number of pruned trials: ": len(pruned_trials),
+                "  Number of complete trials: ": len(complete_trials),
+                "Best trial, score" : (study.best_trial,self.trial.value),
+                "  Params: ": self.trial.params
+        }
