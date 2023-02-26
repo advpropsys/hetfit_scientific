@@ -142,6 +142,6 @@ class Hyper(SCI):
         return {"  Number of finished trials: ":len(study.trials),
                 "  Number of pruned trials: ": len(pruned_trials),
                 "  Number of complete trials: ": len(complete_trials),
-                "Best trial, score" : (study.best_trial,self.trial.value),
+                "Best trial score" : self.trial.value,
                 "  Params: ": self.trial.params
         }
