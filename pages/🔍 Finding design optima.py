@@ -95,7 +95,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'U',r'y':r'd',r'color':r'n_t'},title=r'U,d -> n_t')
+    fig = px.imshow(np.array(y),labels={r'x':r'd',r'y':r'U',r'color':r'n_t'},title=r'U,d -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
@@ -112,7 +112,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'd',r'y':r'h',r'color':r'n_t'},title=r'd,h -> n_t')
+    fig = px.imshow(np.array(y),labels={r'x':r'h',r'y':r'd',r'color':r'n_t'},title=r'd,h -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
@@ -132,7 +132,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'm_a',r'y':r'T',r'color':r'n_t'},title=r'm_a,T -> n_t')
+    fig = px.imshow(np.array(y),labels={r'x':r'T',r'y':r'm_a',r'color':r'n_t'},title=r'm_a,T -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
@@ -150,7 +150,7 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
                             x.append(a.inference(tensor([float(i),float(j)])).item())
                     y.append(x)
 
-    fig = px.imshow(np.array(y),labels={r'x':r'T',r'y':r'Isp',r'color':r'n_t'}, title=r'T,Isp -> n_t')
+    fig = px.imshow(np.array(y),labels={r'x':r'Isp',r'y':r'T',r'color':r'n_t'}, title=r'T,Isp -> n_t')
     fig.update_layout(
         dragmode='drawrect', # define dragmode
         newshape=dict(line_color='cyan'))
