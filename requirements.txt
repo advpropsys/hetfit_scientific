@@ -126,7 +126,6 @@ seaborn==0.12.2
 semver==2.13.0
 simplejson==3.18.3
 six==1.16.0
-sklearn==0.0.post1
 smartypants==2.0.1
 smmap==5.0.0
 SQLAlchemy==2.0.4
