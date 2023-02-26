@@ -74,7 +74,7 @@ fig.show(config={'modeBarButtonsToAdd':['drawline',
                                        ]})
         """)
 
-fig = px.imshow(np.array(y),labels={r'x':r'U',r'y':r'd',r'color':r'n_t'},title=r'U,d -> n_t at P,h,L,T Invariants')
+fig = px.imshow(np.array(y),labels={r'x':r'd',r'y':r'U',r'color':r'n_t'},title=r'U,d -> n_t at P,h,L,T Invariants')
 fig.update_layout(
     dragmode='drawrect', # define dragmode
     newshape=dict(line_color='cyan'))
