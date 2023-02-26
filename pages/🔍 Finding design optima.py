@@ -2,7 +2,7 @@ import streamlit as st
 
 
 st.markdown('## :orange[Finding optimal HET design]')
-st.markdown('Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $\partial{\vec{B}}\over{\partial{z}}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
+st.markdown('Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $\d{B}/\d{z}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
 st.markdown('We are generating new features and specifying new domain based on $n_t$ value ')
 st.code("""
         from nets.envs import SCI
@@ -17,7 +17,7 @@ st.code("""
 from nets.envs import SCI
 import torch
 from nets.design import B_field_norm,PUdesign
-st.write(B_field_norm(0.0002,14,k=16))
+st.write(px.line(B_field_norm(0.0002,14,k=16)))
 a = SCI()
 a.feature_gen()
 a.df = a.df[(a.df.nu_t < 0.66) & (a.df.nu_t > 0)] 
