@@ -28,8 +28,8 @@ Starts study. Optionally provide your neptune repo and token for report generati
 **Arguments**:
 
 - `n_trials` _int, optional_ - Number of iterations. Defaults to 100.
-- `neptune_project` _str, optional_ - . Defaults to None.
-  neptune_api (str, optional):. Defaults to None.
+- `neptune_project` _str, optional_ - None
+- neptune_api (str, optional):. Defaults to None.
   
 
 **Returns**:

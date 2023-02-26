@@ -54,22 +54,26 @@ st.markdown(' As we can see only $h$ and $d$ passed for $m_a$ model, not only th
 st.code('run.compile(idx=(1,3,7))')
 run.compile(idx=(1,3,7))
 st.code('run.train(epochs=10)')
-run.train(epochs=10)
+if st.button('Start Training',icon='⏳',use_container_width=True):
+    run.train(epochs=10)
 st.code('run.plot3d()')
 st.write(run.plot3d())
 st.code('run.performance()')
 st.write(run.performance())
 
 st.write('Try it out yourself! Select a column from 1 to 10')
-number = st.number_input('Here',min_value=1, max_value=10, step=1)
+numcol,button = st.columns(2)
+
+number = numcol.number_input('Here',min_value=1, max_value=10, step=1)
 
 if number:
-    st.code(f'run.compile(idx=(1,3,{number}))')
-    run.compile(idx=(1,3,number))
-    st.code('run.train(epochs=10)')
-    run.train(epochs=10)
-    st.code('run.plot3d()')
-    st.write(run.plot3d())
+    if button.button('Compile And Train',icon='💅'):
+        st.code(f'run.compile(idx=(1,3,{number}))')
+        run.compile(idx=(1,3,number))
+        st.code('run.train(epochs=10)')
+        run.train(epochs=10)
+        st.code('run.plot3d()')
+        st.write(run.plot3d())
 
 
 
