@@ -12,7 +12,7 @@ import torch.utils.data
 from torchmetrics import R2Score
 import neptune.new as neptune
 import neptune.new.integrations.optuna as outils
-from optuna.visualization import plot_contour, plot_optimization_history,plot_parallel_coordinates
+from optuna.visualization import plot_contour, plot_optimization_history,plot_parallel_coordinate
 
 DEVICE = torch.device("cpu")
 BATCHSIZE = 2
