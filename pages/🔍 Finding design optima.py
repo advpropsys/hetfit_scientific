@@ -2,7 +2,7 @@ import streamlit as st
 
 
 st.markdown('## :orange[Finding optimal HET design]')
-st.markdown('Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $\d{B}/\d{z}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
+st.markdown('Firstly we import SCI environment from HETFit module as well as design design module which will plot magnetic flux on $d{B}/d{z}$ Magntically shielded HET configuration and function to get whole deisgn of HET via just $P,U$ as inputs')
 st.markdown('We are generating new features and specifying new domain based on $n_t$ value ')
 st.code("""
         from nets.envs import SCI
