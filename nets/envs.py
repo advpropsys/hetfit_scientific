@@ -59,7 +59,7 @@ class SCI(): #Scaled Computing Interface
             self.df['P_sqrt'] = self.df.iloc[:,1].apply(lambda x: x ** 0.5)
             self.df['j'] = self.df.iloc[:,1]/(self.df.iloc[:,3]*self.df.iloc[:,4])
             self.df['B'] = self.df.iloc[:,-1].apply(lambda x: x ** 2).apply(lambda x:1 if x>1 else x)
-            self.df['nu_t'] = self.df.iloc[:,7]**2/(2*self.df.iloc[:,6]*self.df.P)
+            self.df['nu_t'] = self.df.iloc[:,7]**2/(2*self.df.iloc[:,6]*self.df.iloc[:,1])
             
         if fname and index and func:
             self.df[fname] = self.df.iloc[:,index].apply(func)
@@ -113,6 +113,7 @@ class SCI(): #Scaled Computing Interface
                 batch_size = 1
             else:
                 self.X = tensor(self.df.iloc[:,[*idx[:-1]]].values[:split_idx,:]).float()
+                print(idx)
                 self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx]).float()
         else:
             self.X = tensor(self.df.iloc[:,columns_idx[0]:columns_idx[1]].values[:split_idx,:]).float()
@@ -127,12 +128,22 @@ class SCI(): #Scaled Computing Interface
         return Xtrain
         
     def init_seed(self,seed):
-        """ Initializes seed for torch optional()
+        """ Initializes seed for torch - optional
         """
         
         torch.manual_seed(seed)
         
     def train_epoch(self,X, model, loss_function, optim):
+        """
+        Inner function of class - don't use.
+        
+        We iterate through the data, calculate the loss, backpropagate, and update the weights
+        
+        :param X: the training data
+        :param model: the model we're training
+        :param loss_function: the loss function to use
+        :param optim: the optimizer, which is the algorithm that will update the weights of the model
+        """
         for i,data in enumerate(X):
                 Y_pred = model(data[0])
                 loss = loss_function(Y_pred, data[1])
@@ -177,9 +188,10 @@ class SCI(): #Scaled Computing Interface
         if custom:
             self.model = model()
             self.loss_function = loss()
-            self.optim = optim(self.model.parameters(), lr=lr)
+            if 'sklearn' not in str(self.model.__class__):
+                self.optim = optim(self.model.parameters(), lr=lr)
             if self.len_idx == 2:
-                self.input_dim_for_check = 1
+                    self.input_dim_for_check = 1
         else: 
             if self.len_idx == 2:
                 self.model = model(in_features=1,hidden_features=self.dim).float()
@@ -205,8 +217,12 @@ class SCI(): #Scaled Computing Interface
         """
         if 'sklearn' in str(self.model.__class__):
             self.model.fit(np.array(self.X),np.array(self.Y))
-            plt.scatter(self.X,self.model.predict(self.X))
-            plt.scatter(self.X,self.Y)
+            if len(self.X.shape)==1:
+                plt.scatter(self.X,self.model.predict(self.X),s=1)
+                plt.scatter(self.X,self.Y)
+            else:
+                plt.scatter(self.X[:,0],self.model.predict(self.X),s=1)
+                plt.scatter(self.X[:,0],self.Y)
             plt.xlabel('Xreal')
             plt.ylabel('Ypred/Yreal')
             plt.show()
@@ -227,9 +243,21 @@ class SCI(): #Scaled Computing Interface
         plt.legend()
             
     def save(self,name:str='model.pt') -> None:
+        """
+        > This function saves the model to a file
+        
+        :param name: The name of the file to save the model to, defaults to model.pt
+        :type name: str (optional)
+        """
         torch.save(self.model,name)
         
     def onnx_export(self,path:str='./models/model.onnx'):
+        """
+        > We are exporting the model to the ONNX format, using the input data and the model itself
+        
+        :param path: The path to save the model to, defaults to ./models/model.onnx
+        :type path: str (optional)
+        """
         torch.onnx.export(self.model,self.X,path)
         
     def jit_export(self,path:str='./models/model.pt'):
@@ -257,7 +285,10 @@ class SCI(): #Scaled Computing Interface
         return self.model(X).detach().numpy()
 
     def plot(self):
-        """ Automatic 2d plot
+        """
+        > If the input and output dimensions are the same, plot the input and output as a scatter plot.
+        If the input and output dimensions are different, plot the first dimension of the input and
+        output as a scatter plot
         """
         self.model.eval()
         print(self.Y.shape,self.model(self.X).detach().numpy().shape,self.X.shape)
@@ -437,10 +468,8 @@ class RCI(SCI): #Real object interface
         """
         self.model.eval()
         if 'PINN' in str(self.model.__class__):
-            self.preds=np.array([])
-            for i in self.X:
-                self.preds = np.append(self.preds,self.model(i).detach().numpy()) 
-        print(self.Y.shape,self.preds.shape,self.X.shape)
+            self.preds = self.model(self.X.reshape(-1,1)).detach().numpy()
+        print('Y_shape, pred_shape, X_shape',self.Y.shape,self.preds.shape,self.X.shape)
         if self.X.shape[-1] != self.preds.shape[-1]:
             print('Size mismatch, try 3d plot, plotting by first dim of largest tensor')
             try: X = self.X[:,0]

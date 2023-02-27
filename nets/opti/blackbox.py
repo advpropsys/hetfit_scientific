@@ -22,10 +22,11 @@ N_VALID_EXAMPLES = BATCHSIZE * 10
 
 
 class Hyper(SCI):
-    """_summary_
+    """Hyper parameter tunning class. Allows to generate best NN architecture for task. Inputs are column indexes. idx[-1] is targeted value.
+    Based on OPTUNA algorithms it is very fast and reliable. Outputs are NN parameters in json. Optionally full report for every trial is available at the neptune.ai
+    
 
-    Args:
-        SCI (_type_): _description_
+    
     """
     def __init__(self,idx:tuple=(1,3,7),*args, **kwargs):
         """

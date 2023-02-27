@@ -33,6 +33,20 @@ class dataset():
         self.boundary_conditions = boundary_conditions
     
     def generate(self):
+        """
+        The function takes in a dataframe, normalizes it, and then trains a DCGAN on it. 
+        
+        The DCGAN is a type of generative adversarial network (GAN) that is used to generate new data. 
+        
+        The DCGAN is trained on the normalized dataframe, and then the DCGAN is used to generate new
+        data. 
+        
+        The new data is then concatenated with the original dataframe, and the new dataframe is saved as
+        a pickle file. 
+        
+        The new dataframe is then returned.
+        :return: The dataframe is being returned.
+        """
         with open(f"./data/{self.source}", "rb") as input_file:
             local = pd.read_csv(input_file)
             dfs = local.drop("Name",axis=1)
