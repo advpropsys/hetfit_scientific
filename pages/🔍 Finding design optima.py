@@ -101,6 +101,9 @@ if st.button(r'Generate $f:R^2 \to R$ maps',use_container_width=True):
         newshape=dict(line_color='cyan'))
     # Add modebar buttons
     st.write(fig)
+    
+    
+    
 
     a.compile(idx=(3,4,-1))
     a.train()
