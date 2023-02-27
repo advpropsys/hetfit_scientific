@@ -25,7 +25,7 @@ class SCI(): #Scaled Computing Interface
             source (str, optional): Source from which data will be generated. Better to not change. Defaults to 'dataset.csv'.
             boundary_conditions (list, optional): If sepcified, whole dataset will be cut rectangulary. Input list is [ymin,ymax,xmin,xmax] type. Defaults to None.
     """
-    def __init__(self, hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',sample_size:int=1000,source:str='dataset.csv',boundary_conditions:list=None):
+    def __init__(self, hidden_dim:int = 200, dropout:bool = True, epochs:int = 10, dataset:str = 'test.pkl',sample_size:int=1000,source:str='dataset.csv',boundary_conditions:list=None,batch_size:int=20):
         """Init
         Args:
             hidden_dim (int, optional): Max demension of hidden linear layer. Defaults to 200. Should be >80 in not 1d case
@@ -35,11 +35,13 @@ class SCI(): #Scaled Computing Interface
             sample_size (int, optional): Samples to be generated (note: BEFORE applying boundary conditions). Defaults to 1000.
             source (str, optional): Source from which data will be generated. Better to not change. Defaults to 'dataset.csv'.
             boundary_conditions (list, optional): If sepcified, whole dataset will be cut rectangulary. Input list is [ymin,ymax,xmin,xmax] type. Defaults to None.
+            batch_size (int, optional): Batch size for training.
         """
         self.type:str = 'legacy'
         self.seed:int = 449
         self.dim = hidden_dim
         self.dropout = dropout
+        self.batch_size = batch_size
         self.df = get_dataset(sample_size=sample_size,source=source,name=dataset,boundary_conditions=boundary_conditions)
         self.epochs = epochs
         self.len_idx = 0
@@ -101,7 +103,7 @@ class SCI(): #Scaled Computing Interface
         Returns:
             torch.utils.data.DataLoader: Torch native dataloader
         """
-        batch_size=2
+        batch_size=self.batch_size
         
         self.split_idx=split_idx
         
@@ -145,8 +147,9 @@ class SCI(): #Scaled Computing Interface
         :param optim: the optimizer, which is the algorithm that will update the weights of the model
         """
         for i,data in enumerate(X):
-                Y_pred = model(data[0])
-                loss = loss_function(Y_pred, data[1])
+                inp, val = data
+                Y_pred = model(inp)
+                loss = loss_function(Y_pred, val)
                 
                 # mean_abs_percentage_error = MeanAbsolutePercentageError()
                 # ape = mean_abs_percentage_error(Y_pred, data[1])
@@ -396,7 +399,7 @@ class RCI(SCI): #Real object interface
             Returns:
                 torch.utils.data.DataLoader: Torch native dataloader
             """
-            batch_size=2
+            batch_size=self.batch_size
             
             real_scale = pd.read_csv('data/dataset.csv').iloc[17,1:].to_numpy()
             self.df.iloc[:,1:] = self.df.iloc[:,1:] * real_scale
@@ -409,7 +412,7 @@ class RCI(SCI): #Real object interface
                 if len(idx)==2:
                     self.X = tensor(self.df.iloc[:,idx[0]].values[:split_idx].astype(float)).float()
                     self.Y = tensor(self.df.iloc[:,idx[1]].values[:split_idx].astype(float)).float()
-                    batch_size = 1
+                    # batch_size = 1
                 else:
                     self.X = tensor(self.df.iloc[:,[idx[0],idx[1]]].values[:split_idx,:].astype(float)).float()
                     self.Y = tensor(self.df.iloc[:,idx[2]].values[:split_idx].astype(float)).float()
