@@ -1,4 +1,5 @@
 **/.venv
 **/iframe_figures
 **/anal
+**/.neptune
 */utils/1d-gan.ipynb
