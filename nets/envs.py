@@ -333,9 +333,10 @@ class SCI(): #Scaled Computing Interface
                             )
         # fig.colorbar(surf, shrink=0.5, aspect=5)
         surf.update_traces(marker_size=3)
-        surf.update_layout(plot_bgcolor='#888888')
+        
         surf.add_mesh3d(x=x, y=y, z=z, opacity=0.7,colorscale='sunsetdark',intensity=z,
             )
+        surf.update_layout(plot_bgcolor='rgba(0,0,0,0)')
         # surf.show()
         
         return surf
