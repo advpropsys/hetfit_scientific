@@ -108,9 +108,9 @@ st.markdown("""
 As we will use dataset of only low power hall thrusters, we can just
 ignore derivation of any non-linear equations and relations and use
 traditional approach here. Let’s define some parameters of anode:
-$$\alpha = \frac{\dot{m}\beta}{{\dot{m}_a}},$$
-Where $\alpha$ is anode
-parameter of $\beta$ thruster parameter. This is selected because this
+$$\\alpha = \\frac{\dot{m}\\beta}{{\dot{m}_a}},$$
+Where $\\alpha$ is anode
+parameter of $\\beta$ thruster parameter. This is selected because this
 way cathode and other losses wont be included in the model. One of key
 differences in this approach is fitting only best and most appropriate
 data, thus we will eliminate some variance in scaling laws. Though due
@@ -132,8 +132,8 @@ $h=C_hd$
 $\dot{m_a} = C_m hd$
 $P_d=C_pU_dd^2$
 $T=C_t\dot{m_a}\sqrt{U_d}$
-$I_{spa}=\frac{T}{\dot{m_a} g}$
-$\eta_a=\frac{T}{2\dot{m_a}P_d}$
+$I_{spa}=\\frac{T}{\dot{m_a} g}$
+$\eta_a=\\frac{T}{2\dot{m_a}P_d}$
 
 </div>
 
