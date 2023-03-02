@@ -128,12 +128,17 @@ equations which are used for scaling current thrusters.
 
 <div class="longtable*" markdown="1">
 
-$h=C_hd$
+$h = C_hd$
+
 $\dot{m_a} = C_m hd$
-$P_d=C_pU_dd^2$
-$T=C_t\dot{m_a}\sqrt{U_d}$
-$I_{spa}=\\frac{T}{\dot{m_a} g}$
-$\eta_a=\\frac{T}{2\dot{m_a}P_d}$
+
+$P_d = C_pU_dd^2$
+
+$T = C_t\dot{m_a}\sqrt{U_d}$
+
+$I_{spa} = \\frac{T}{\dot{m_a} g}$
+
+$\eta_a = \\frac{T}{2\dot{m_a}P_d}$
 
 </div>
 
@@ -200,7 +205,7 @@ All of Fully connected neural networks are implemented in PyTorch as it
 the most powerful ML/AI library for experiments. When the network
 architecture is generated, all of networks have similar training loops
 as they use gradient descend algorithm : Loss function:
-$$L(w, b) \equiv \frac{1}{2 n} \sum_x\|y(x)-a\|^2$$ This one is mean
+$$L(w, b) \equiv \\frac{1}{2 n} \sum_x\|y(x)-a\|^2$$ This one is mean
 square error (MSE) error function most commonly used in FNNs. Next we
 iterate while updating weights for a number of specified epochs this
 way. Loop for number of epochs:
