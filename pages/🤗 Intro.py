@@ -101,7 +101,7 @@ provided as follows.
 """,unsafe_allow_html=True)
 
 st.image("gen.png", "GAN architecture")
-st.image("dT.png ","Sample of generated datagray - fake, blue - real")
+st.image("dT.png","Sample of generated datagray - fake, blue - real")
 st.markdown("""
 # General Relations
 
@@ -188,12 +188,12 @@ user interface is as follows: 1. Specify working environment 2. Load or
 generate data 3. Tune the architecture 4. Train and get robust scaling
 models""",unsafe_allow_html=True)
 
-"""
-<figure>
-<img src="A6 - 1.png" />
-<figcaption>Hall effect thruster geometry</figcaption>
-</figure>
 
+st.image("A6 - 1.png","Hall effect thruster geometry")
+
+
+
+st.markdown("""
 ## FNN
 
 All of Fully connected neural networks are implemented in PyTorch as it
@@ -253,25 +253,18 @@ One of main characteristics for any type of thruster is efficiency, in
 this work I researched dependency of multiple input values to $\eta_t$.
 Results are as follows in form of predicted matrix visualisations.
 Figure 3 takes into account all previous ones in the same time, once
-again it would be way harder to do without ML.
+again it would be way harder to do without ML.""",unsafe_allow_html=True)
 
-<figure>
-<img src="invariant.png" />
-<img src="variant.png" />
-<img src="dH.png" />
-<img src="maT.png" />
-<figcaption><span
-class="math inline"><em>m</em><sub><em>ȧ</em></sub>, <em>T</em> → <em>η</em><sub><em>t</em></sub></span>
-predictions</figcaption>
-</figure>
 
-<figure>
-<img src="Tisp.png" />
-<figcaption><span
-class="math inline"><em>I</em><sub><em>s</em><em>p</em></sub>, <em>T</em> → <em>η</em><sub><em>t</em></sub></span>
-predictions</figcaption>
-</figure>
+st.image("invariant.png") 
+st.image("variant.png")
+st.image("dH.png")
+st.image("maT.png","m_ȧ,T → η")
 
+
+st.image("Tisp.png", "I_sp,T → η")
+
+"""
 # Results discussion
 
 Let’s compare predictions of semi empirical approach(Lee et al.
@@ -287,7 +280,7 @@ allows logging into neptune.ai environment for full control over
 simulations. Example trail run looks like that.
 
 <figure>
-<img src="objective.png" />
+st.image("objective.png" />
 <figcaption>TPE algorithm architecture optimization</figcaption>
 </figure>
 
@@ -301,7 +294,7 @@ z axis is computable and looks like that for magnetically shielded
 thrusters:
 
 <figure>
-<img src="Bz.png" />
+st.image("Bz.png" />
 <figcaption>dB/dz distribution</figcaption>
 </figure>
 
@@ -312,14 +305,14 @@ width, where hue map is thrust. It is well known dependency and it has
 few around 95% prediction band (Lee et al. 2019-11)
 
 <figure>
-<img src="TDP.png" style="width:60.0%" />
+st.image("TDP.png" style="width:60.0%" />
 <figcaption>Dependency of T on d,P</figcaption>
 </figure>
 
 ## Dependency of T on P,U
 
 <figure>
-<img src="TPU.png" />
+st.image("TPU.png" />
 <figcaption>Dependency of T on P,U</figcaption>
 </figure>
 
@@ -330,7 +323,7 @@ parameters than linear relation. So such method proves to be more
 precise on specified domain than semi empirical linear relations.
 
 <figure>
-<img src="mapT.png" />
+st.image("mapT.png" />
 <figcaption>Dependency of T on <span
 class="math inline"><em>m</em><sub><em>a</em></sub></span>,P</figcaption>
 </figure>
@@ -338,7 +331,7 @@ class="math inline"><em>m</em><sub><em>a</em></sub></span>,P</figcaption>
 ## Dependency of $I_{sp}$ on d,h
 
 <figure>
-<img src="Isp.png" />
+st.image("Isp.png" />
 <figcaption>Dependency of <span
 class="math inline"><em>I</em><sub><em>s</em><em>p</em></sub></span> on
 d,h</figcaption>
@@ -374,7 +367,7 @@ estimate since SEM predictions of thrust are always higher than real
 performance. Lee et al. (2019-11)
 
 <figure>
-<img src="Screenshot 2023-01-14 at 16.07.46.png" />
+st.image("Screenshot 2023-01-14 at 16.07.46.png" />
 <figcaption>Magnetic flux density distribution, magnetic shielding
 configuration</figcaption>
 </figure>
@@ -408,12 +401,12 @@ temperatures, energy distribution functions from initial conditions and
 geometry. Here is comparison of both channels.
 
 <figure>
-<img src="geom.png" />
+st.image("geom.png" />
 <figcaption>Electron density with linear SEM geometry</figcaption>
 </figure>
 
 <figure>
-<img src="topgeom.png" />
+st.image("topgeom.png" />
 <figcaption>Electron density with HETfit geometry</figcaption>
 </figure>
 
@@ -436,12 +429,12 @@ since most of cases and tasks tend to be the same: feature selection and
 model optimization.
 
 <figure>
-<img src="hhfff2.png" />
+st.image("hhfff2.png" />
 <figcaption>COMSOL simulation of designed thruster start up</figcaption>
 </figure>
 
 <figure>
-<img src="IMG_1346-2.png" />
+st.image("IMG_1346-2.png" />
 <figcaption>Manufactured channel</figcaption>
 </figure>
 
