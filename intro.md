@@ -105,7 +105,7 @@ real</figcaption>
 As we will use dataset of only low power hall thrusters, we can just
 ignore derivation of any non-linear equations and relations and use
 traditional approach here. Let’s define some parameters of anode:
-$$\label{sample:equation}\alpha = \frac{\dot{m}\beta}{{\dot{m}_a}},$$
+$$\alpha = \frac{\dot{m}\beta}{{\dot{m}_a}},$$
 Where $\alpha$ is anode
 parameter of $\beta$ thruster parameter. This is selected because this
 way cathode and other losses wont be included in the model. One of key
@@ -123,14 +123,13 @@ power density. Function of input is solely dependant on power and
 voltage range. For the matter of topic let’s introduce semi-empirical
 equations which are used for scaling current thrusters.
 
-$$\begin{aligned}
-&h=C_hd\\
-&\dot{m_a} = C_m hd\\
-&P_d=C_pU_dd^2\\
-&T=C_t\dot{m_a}\sqrt{U_d}\\
-&I_{spa}=\frac{T}{\dot{m_a} g}\\
-&\eta_a=\frac{T}{2\dot{m_a}P_d}
-\end{aligned}$$
+$h=C_hd$\\
+$\dot{m_a} = C_m hd$\\
+$P_d=C_pU_dd^2$\\
+$T=C_t\dot{m_a}\sqrt{U_d}$\\
+$I_{spa}=\frac{T}{\dot{m_a} g}$\\
+$\eta_a=\frac{T}{2\dot{m_a}P_d}$
+$\end{aligned}$
 
 Where $C_x$ is scaling coefficient obtained from analytical modelling,
 which makes equations linear. Generally it has 95% prediction band but
