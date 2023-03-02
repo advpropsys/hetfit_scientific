@@ -21,19 +21,19 @@ title: Hall effect thruster design via deep neural network for additive
 
 <div class="longtable*" markdown="1">
 
-@l @= l@ $U_d$ & discharge voltage  
-$P$ & discharge power  
-$T$& thrust  
-$\dot{m}_a$ & mass flow rate  
-$I_{sp}$ & specific impulse  
-$\eta_m$ & mass utilization efficiency  
-$\eta_a$ & anode efficiency  
-$j$ & $P/v$ \[power density\]  
-$v$ & discharge channel volume  
-$h, d, L$ & generic geometry parameters  
-$C_*$ & set of scaling coefficients  
-$g$ & free-fall acceleration  
-$M$ & ion mass
+$U_d$ = discharge voltage  
+$P$ = discharge power  
+$T$ = thrust  
+$\dot{m}_a$ = mass flow rate  
+$I_{sp}$ = specific impulse  
+$\eta_m$ = mass utilization efficiency  
+$\eta_a$ = anode efficiency  
+$j$ = $P/v$ \[power density\]  
+$v$ = discharge channel volume  
+$h, d, L$ = generic geometry parameters  
+$C_*$ = set of scaling coefficients  
+$g$ = free-fall acceleration  
+$M$ = ion mass
 
 </div>
 
@@ -123,13 +123,12 @@ power density. Function of input is solely dependant on power and
 voltage range. For the matter of topic let’s introduce semi-empirical
 equations which are used for scaling current thrusters.
 
-$h=C_hd$\\
-$\dot{m_a} = C_m hd$\\
-$P_d=C_pU_dd^2$\\
-$T=C_t\dot{m_a}\sqrt{U_d}$\\
-$I_{spa}=\frac{T}{\dot{m_a} g}$\\
-$\eta_a=\frac{T}{2\dot{m_a}P_d}$
-$\end{aligned}$
+$$h=C_hd$$
+$$\dot{m_a} = C_m hd$$
+$$P_d=C_pU_dd^2$$
+$$T=C_t\dot{m_a}\sqrt{U_d}$$
+$$I_{spa}=\frac{T}{\dot{m_a} g}$$
+$$\eta_a=\frac{T}{2\dot{m_a}P_d}$$
 
 Where $C_x$ is scaling coefficient obtained from analytical modelling,
 which makes equations linear. Generally it has 95% prediction band but
