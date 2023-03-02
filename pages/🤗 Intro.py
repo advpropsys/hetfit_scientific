@@ -6,7 +6,8 @@ from pathlib import Path
 import streamlit as st
 
 st.markdown("""
-abstract: Hall effect thrusters are one of the most versatile and
+# :orange[abstract]
+  Hall effect thrusters are one of the most versatile and
   popular electric propulsion systems for space use. Industry trends
   towards interplanetary missions arise advances in design development
   of such propulsion systems. It is understood that correct sizing of
@@ -20,10 +21,8 @@ abstract: Hall effect thrusters are one of the most versatile and
   can be used to effortlessly get design of required hall thruster with
   required characteristics using way less computing power than design
   from scratch and way more flexible than usual scaling approach.
-author: Korolev K.V [^1]
-bibliography: sample.bib
-title: Hall effect thruster design via deep neural network for additive
-  manufacturing
+### author: Korolev K.V [^1]
+[^1]: Founder, Pure EP
 
 # Nomenclature
 
