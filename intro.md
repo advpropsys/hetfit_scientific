@@ -105,8 +105,8 @@ real</figcaption>
 As we will use dataset of only low power hall thrusters, we can just
 ignore derivation of any non-linear equations and relations and use
 traditional approach here. Let’s define some parameters of anode:
-$$\label{sample:equation}
-\alpha = \frac{\dot{m}\beta}{{\dot{m}_a}},$$ Where $\alpha$ is anode
+$$\label{sample:equation}\alpha = \frac{\dot{m}\beta}{{\dot{m}_a}},$$
+Where $\alpha$ is anode
 parameter of $\beta$ thruster parameter. This is selected because this
 way cathode and other losses wont be included in the model. One of key
 differences in this approach is fitting only best and most appropriate
