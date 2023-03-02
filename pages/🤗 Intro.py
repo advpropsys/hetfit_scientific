@@ -149,7 +149,6 @@ thrusters designs (high mass, same power density, average performance).
 The original dataset is
 
 
-|:---------|:---------|:-------|:------|:------|:------|:-------------|:-----|:----------|
 | Thruster | Power, W | U_d, V | d, mm | h, mm | L, mm | m_a, | T, N | I\_spa, s |
 | SPT-20   | 52.4     | 180    | 15.0  | 5.0   | 32.0  | 0.47         | 3.9  | 839       |
 | SPT-25   | 134      | 180    | 20.0  | 5.0   | 10    | 0.59         | 5.5  | 948       |
