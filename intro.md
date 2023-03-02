@@ -91,8 +91,8 @@ scaled on original dataset to retain quality), only 0.02% of points were
 found to be outliers. The GAN architecture and dataset sample is
 provided as follows.
 
-![GAN architecture](gen.png)
-![Sample of generated datagray - fake, blue - real](dT.png)
+![GAN architecture](gen.png "GAN architecture")
+![Sample of generated datagray - fake, blue - real](dT.png "Sample of generated datagray - fake, blue - real")
 
 # General Relations
 
