@@ -1,4 +1,5 @@
-abstract: Hall effect thrusters are one of the most versatile and
+# :orange[Abstract:] 
+  Hall effect thrusters are one of the most versatile and
   popular electric propulsion systems for space use. Industry trends
   towards interplanetary missions arise advances in design development
   of such propulsion systems. It is understood that correct sizing of
@@ -12,8 +13,7 @@ abstract: Hall effect thrusters are one of the most versatile and
   can be used to effortlessly get design of required hall thruster with
   required characteristics using way less computing power than design
   from scratch and way more flexible than usual scaling approach.
-author: Korolev K.V [^1]
-bibliography: sample.bib
+:orange[author:] Korolev K.V [^1]
 title: Hall effect thruster design via deep neural network for additive
   manufacturing
 
@@ -91,8 +91,8 @@ scaled on original dataset to retain quality), only 0.02% of points were
 found to be outliers. The GAN architecture and dataset sample is
 provided as follows.
 
-![GAN architecture](gen.png "GAN architecture")
-![Sample of generated datagray - fake, blue - real](dT.png "Sample of generated datagray - fake, blue - real")
+<!-- ![GAN architecture](gen.png "GAN architecture")
+![Sample of generated datagray - fake, blue - real](dT.png "Sample of generated datagray - fake, blue - real") -->
 
 # General Relations
 
@@ -120,10 +120,15 @@ equations which are used for scaling current thrusters.
 <div class="longtable*" markdown="2">
 
 $$h=C_hd$$
+
 $$\dot{m_a} = C_m hd$$
+
 $$P_d=C_pU_dd^2$$
+
 $$T=C_t\dot{m_a}\sqrt{U_d}$$
+
 $$I_{spa}=\frac{T}{\dot{m_a} g}$$
+
 $$\eta_a=\frac{T}{2\dot{m_a}P_d}$$
 
 </div>
@@ -136,7 +141,7 @@ The original dataset is
 
 |          |          |        |       |       |       |              |      |           |
 |:---------|:---------|:-------|:------|:------|:------|:-------------|:-----|:----------|
-| Thruster | Power, W | U_d, V | d, mm | h, mm | L, mm | $m_\dot{a}$, | T, N | I\_spa, s |
+| Thruster | Power, W | U_d, V | d, mm | h, mm | L, mm | m_a,.g/s,    | T, N | I\_spa, s |
 | SPT-20   | 52.4     | 180    | 15.0  | 5.0   | 32.0  | 0.47         | 3.9  | 839       |
 | SPT-25   | 134      | 180    | 20.0  | 5.0   | 10    | 0.59         | 5.5  | 948       |
 | Music-si | 140      | 288    | 18    | 2     | 6.5   | 0.44         | 4.2  | 850       |
@@ -178,11 +183,6 @@ with SELU, Tanh or ReLU activations and most optimal optimizer. The code
 user interface is as follows: 1. Specify working environment 2. Load or
 generate data 3. Tune the architecture 4. Train and get robust scaling
 models
-
-<figure>
-<img src="A6 - 1.png" />
-<figcaption>Hall effect thruster geometry</figcaption>
-</figure>
 
 ## FNN
 
@@ -245,22 +245,7 @@ Results are as follows in form of predicted matrix visualisations.
 Figure 3 takes into account all previous ones in the same time, once
 again it would be way harder to do without ML.
 
-<figure>
-<img src="invariant.png" />
-<img src="variant.png" />
-<img src="dH.png" />
-<img src="maT.png" />
-<figcaption><span
-class="math inline"><em>m</em><sub><em>ȧ</em></sub>, <em>T</em> → <em>η</em><sub><em>t</em></sub></span>
-predictions</figcaption>
-</figure>
 
-<figure>
-<img src="Tisp.png" />
-<figcaption><span
-class="math inline"><em>I</em><sub><em>s</em><em>p</em></sub>, <em>T</em> → <em>η</em><sub><em>t</em></sub></span>
-predictions</figcaption>
-</figure>
 
 # Results discussion
 
@@ -276,10 +261,7 @@ to create architecture with score of 0.9+ in matter of seconds. HETFit
 allows logging into neptune.ai environment for full control over
 simulations. Example trail run looks like that.
 
-<figure>
-<img src="objective.png" />
-<figcaption>TPE algorithm architecture optimization</figcaption>
-</figure>
+
 
 ## Power density and magnetic flux dependence
 
@@ -290,10 +272,7 @@ remains unresolved to ML approach but the magnetic field distribution on
 z axis is computable and looks like that for magnetically shielded
 thrusters:
 
-<figure>
-<img src="Bz.png" />
-<figcaption>dB/dz distribution</figcaption>
-</figure>
+
 
 ## Dependency of T on d,P
 
@@ -301,17 +280,11 @@ Following graph is describing Thrust as function of channel diameter and
 width, where hue map is thrust. It is well known dependency and it has
 few around 95% prediction band (Lee et al. 2019-11)
 
-<figure>
-<img src="TDP.png" style="width:60.0%" />
-<figcaption>Dependency of T on d,P</figcaption>
-</figure>
+
 
 ## Dependency of T on P,U
 
-<figure>
-<img src="TPU.png" />
-<figcaption>Dependency of T on P,U</figcaption>
-</figure>
+
 
 ## Dependency of T on $m_a$,P
 
@@ -319,20 +292,11 @@ Compared to(Shagayda and Gorshkov 2013-03) The model accounts for more
 parameters than linear relation. So such method proves to be more
 precise on specified domain than semi empirical linear relations.
 
-<figure>
-<img src="mapT.png" />
-<figcaption>Dependency of T on <span
-class="math inline"><em>m</em><sub><em>a</em></sub></span>,P</figcaption>
-</figure>
+
 
 ## Dependency of $I_{sp}$ on d,h
 
-<figure>
-<img src="Isp.png" />
-<figcaption>Dependency of <span
-class="math inline"><em>I</em><sub><em>s</em><em>p</em></sub></span> on
-d,h</figcaption>
-</figure>
+
 
 We generated many models so far, but using ML we can make single model
 for all of the parameters at the same time, so these graphs tend to be
@@ -363,11 +327,7 @@ variables in model of HET. This is experimentally proven to be efficient
 estimate since SEM predictions of thrust are always higher than real
 performance. Lee et al. (2019-11)
 
-<figure>
-<img src="Screenshot 2023-01-14 at 16.07.46.png" />
-<figcaption>Magnetic flux density distribution, magnetic shielding
-configuration</figcaption>
-</figure>
+
 
 ## Code description
 
@@ -397,15 +357,7 @@ which gives the ability to accurately compute Electron densities,
 temperatures, energy distribution functions from initial conditions and
 geometry. Here is comparison of both channels.
 
-<figure>
-<img src="geom.png" />
-<figcaption>Electron density with linear SEM geometry</figcaption>
-</figure>
 
-<figure>
-<img src="topgeom.png" />
-<figcaption>Electron density with HETfit geometry</figcaption>
-</figure>
 
 # Conclusion
 
@@ -425,15 +377,6 @@ The code in this work could be used with other tabular experimental data
 since most of cases and tasks tend to be the same: feature selection and
 model optimization.
 
-<figure>
-<img src="hhfff2.png" />
-<figcaption>COMSOL simulation of designed thruster start up</figcaption>
-</figure>
-
-<figure>
-<img src="IMG_1346-2.png" />
-<figcaption>Manufactured channel</figcaption>
-</figure>
 
 <div id="refs" class="references csl-bib-body hanging-indent"
 markdown="1">
