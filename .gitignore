@@ -2,3 +2,9 @@
 **/iframe_figures
 **/anal
 */utils/1d-gan.ipynb
+
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
