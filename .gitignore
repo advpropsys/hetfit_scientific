@@ -1,6 +1,7 @@
 **/.venv
 **/iframe_figures
 **/anal
+**/pages
 ./utils/1d-gan.ipynb
 
 __pycache__/
