@@ -157,10 +157,11 @@ def random_normal_samples(n, dim=2):
 
 
 class nflow():
-    def __init__(self,dim=2,latent=16,batchsize:int=1):
+    def __init__(self,dim=2,latent=16,batchsize:int=1,datasetPath:str='data/dataset.csv'):
         self.dim = dim
         self.batchsize = batchsize
         self.model = NormalizingFlow(dim, latent)
+        self.datasetPath = datasetPath
 
     def compile(self,optim:torch.optim=torch.optim.Adam,lr:float=0.0001):
         self.opt = optim(
@@ -170,7 +171,7 @@ class nflow():
         )
         scaler = StandardScaler()
         
-        df = pd.read_csv('data/dataset.csv')
+        df = pd.read_csv(self.datasetPath)
         df = df.iloc[:,1:]
         self.scaled = scaler.fit_transform(df)
         self.density = GaussianKDE(X=torch.tensor(self.scaled, dtype=torch.float32), bw=0.03)
