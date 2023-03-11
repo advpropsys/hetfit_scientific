@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from torch.distributions import MultivariateNormal, Normal
+from sklearn.metrics import r2_score
 from torch.distributions.distribution import Distribution
 import numpy as np
 
@@ -203,3 +204,6 @@ class nflow():
                 print("Loss {}".format(loss.item()))
                 
         plt.plot(self.losses)
+    
+    def performance(self):
+        return r2_score(self.scaled,self.model.sample(torch.tensor(random_normal_samples(len(self.scaled),8)).float()).detach().numpy())
