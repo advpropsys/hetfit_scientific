@@ -2,11 +2,11 @@ import torch.nn as nn
 import torch
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler,MinMaxScaler
 import matplotlib.pyplot as plt
-from torch.distributions import MultivariateNormal, Normal
-from sklearn.metrics import r2_score
+from torch.distributions import MultivariateNormal, LogNormal,Normal, Chi2
 from torch.distributions.distribution import Distribution
+from sklearn.metrics import r2_score
 import numpy as np
 
 class GaussianKDE(Distribution):
@@ -81,6 +81,79 @@ class GaussianKDE(Distribution):
                 log_prob += self.score_samples(y,x).sum(dim=0)
 
         return log_prob
+    
+class Chi2KDE(Distribution):
+    def __init__(self, X, bw):
+        """
+        X : tensor (n, d)
+          `n` points with `d` dimensions to which KDE will be fit
+        bw : numeric
+          bandwidth for Gaussian kernel
+        """
+        self.X = X
+        self.bw = bw
+        self.dims = X.shape[-1]
+        self.n = X.shape[0]
+        self.mvn = Chi2(self.dims)
+
+    def sample(self, num_samples):
+        idxs = (np.random.uniform(0, 1, num_samples) * self.n).astype(int)
+        norm = LogNormal(loc=self.X[idxs], scale=self.bw)
+        return norm.sample()
+
+    def score_samples(self, Y, X=None):
+        """Returns the kernel density estimates of each point in `Y`.
+
+        Parameters
+        ----------
+        Y : tensor (m, d)
+          `m` points with `d` dimensions for which the probability density will
+          be calculated
+        X : tensor (n, d), optional
+          `n` points with `d` dimensions to which KDE will be fit. Provided to
+          allow batch calculations in `log_prob`. By default, `X` is None and
+          all points used to initialize KernelDensityEstimator are included.
+
+
+        Returns
+        -------
+        log_probs : tensor (m)
+          log probability densities for each of the queried points in `Y`
+        """
+        if X == None:
+            X = self.X
+        log_probs = self.mvn.log_prob(abs(X.unsqueeze(1) - Y)).sum()
+
+        return log_probs
+
+    def log_prob(self, Y):
+        """Returns the total log probability of one or more points, `Y`, using
+        a Multivariate Normal kernel fit to `X` and scaled using `bw`.
+
+        Parameters
+        ----------
+        Y : tensor (m, d)
+          `m` points with `d` dimensions for which the probability density will
+          be calculated
+
+        Returns
+        -------
+        log_prob : numeric
+          total log probability density for the queried points, `Y`
+        """
+
+        X_chunks = self.X
+        Y_chunks = Y
+        self.Y = Y
+        log_prob = 0
+
+        for x in X_chunks:
+            for y in Y_chunks:
+                
+                log_prob += self.score_samples(y,x).sum(dim=0)
+
+        return log_prob
+    
     
 class PlanarFlow(nn.Module):
     """
@@ -164,18 +237,24 @@ class nflow():
         self.model = NormalizingFlow(dim, latent)
         self.datasetPath = datasetPath
 
-    def compile(self,optim:torch.optim=torch.optim.Adam,lr:float=0.0001):
+    def compile(self,optim:torch.optim=torch.optim.Adam,distribution:str='GaussianKDE',lr:float=0.0001):
         self.opt = optim(
             params=self.model.parameters(),
             lr=lr,
             # momentum=0.1
         )
         scaler = StandardScaler()
+        scaler_mm = MinMaxScaler()
         
         df = pd.read_csv(self.datasetPath)
         df = df.iloc[:,1:]
-        self.scaled = scaler.fit_transform(df)
-        self.density = GaussianKDE(X=torch.tensor(self.scaled, dtype=torch.float32), bw=0.03)
+        
+        
+        if 'Chi2' in distribution:
+            self.scaled=scaler_mm.fit_transform(df)
+        else: self.scaled = scaler.fit_transform(df)
+        
+        self.density = globals()[distribution](X=torch.tensor(self.scaled, dtype=torch.float32), bw=0.03)
         
         # self.dl = torch.utils.data.DataLoader(scaled,batchsize=self.batchsize)
         self.scheduler = ReduceLROnPlateau(self.opt, 'min', patience=1000)
@@ -204,6 +283,8 @@ class nflow():
                 print("Loss {}".format(loss.item()))
                 
         plt.plot(self.losses)
-    
+        
     def performance(self):
-        return r2_score(self.scaled,self.model.sample(torch.tensor(random_normal_samples(len(self.scaled),8)).float()).detach().numpy())
+        samples = ((self.model.sample(torch.tensor(self.scaled).float())).detach().numpy())
+        
+        print('r2', r2_score(self.scaled,samples))
