@@ -24,7 +24,7 @@ def samples():
         torch.tensor(api.scaled).float()).detach())
     return samples
 
-fig = plt.figure(figsize=(10,4))
+fig = plt.figure(figsize=(10,8))
 g = sns.jointplot(x=samples()[:, 0], y=samples()[:, 1], kind='kde',cmap=sns.color_palette("Blues", as_cmap=True),fill=True,label='Gaussian KDE')
 sns.scatterplot(x=api.scaled[:,0],y=api.scaled[:,1],ax=g.ax_joint,c='orange',marker='+',s=100,label='Real')
 
