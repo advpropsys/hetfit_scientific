@@ -16,7 +16,7 @@ api.compile(optim=torch.optim.ASGD,bw=3.05,lr=0.0001,wd=None)
 st.code('api.train(iters=8000)')
 
 
-api.train(iters=100)
+api.train(iters=8000)
 
 @st.cache_data
 def samples():
