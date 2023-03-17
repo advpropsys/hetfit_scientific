@@ -19,8 +19,8 @@ api.train(iters=8000)
 
 samples = np.array(api.model.sample(
         torch.tensor(api.scaled).float()).detach())
-
+fig = plt.figure(figsize=(10,4))
 g = sns.jointplot(x=samples[:, 0], y=samples[:, 1], kind='kde',cmap=sns.color_palette("Blues", as_cmap=True),fill=True,label='Gaussian KDE')
+sns.scatterplot(x=api.scaled[:,0],y=api.scaled[:,1],ax=g.ax_joint,c='orange',marker='+',s=100,label='Real')
 
-
-st.pyplot(sns.scatterplot(x=api.scaled[:,0],y=api.scaled[:,1],ax=g.ax_joint,c='orange',marker='+',s=100,label='Real'))
+st.pyplot(fig)
