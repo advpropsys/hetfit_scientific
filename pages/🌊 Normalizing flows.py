@@ -27,5 +27,8 @@ def samples():
 fig = plt.figure(figsize=(10,8))
 g = sns.jointplot(x=samples()[:, 0], y=samples()[:, 1], kind='kde',cmap=sns.color_palette("Blues", as_cmap=True),fill=True,label='Gaussian KDE')
 fig = sns.scatterplot(x=api.scaled[:,0],y=api.scaled[:,1],ax=g.ax_joint,c='orange',marker='+',s=100,label='Real')
-
+st.markdown('## 10 iters')
 st.pyplot(fig.get_figure())
+
+st.markdown('## 12000 iters')
+st.image('output.png')
