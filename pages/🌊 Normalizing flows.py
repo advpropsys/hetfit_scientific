@@ -14,7 +14,7 @@ api = nflow(dim=8,latent=16)
 st.code('api.compile(optim=torch.optim.ASGD,bw=3.05,lr=0.0001,wd=None)')
 api.compile(optim=torch.optim.ASGD,bw=3.05,lr=0.0001,wd=None)
 st.code('api.train(iters=8000)')
-api.train(iters=8000)
+api.train(iters=100)
 
 
 samples = np.array(api.model.sample(
