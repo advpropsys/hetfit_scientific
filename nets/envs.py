@@ -10,6 +10,7 @@ import os
 import numpy as np
 from torch import nn, tensor
 import pandas as pd
+from sklearn import svm
 import plotly.express as px
 from sklearn.linear_model import SGDRegressor
 from sklearn.feature_selection import SelectFromModel
@@ -379,7 +380,6 @@ class RCI(SCI): #Real object interface
             self.df.iloc[:,1:] = self.df.iloc[:,1:] * real_scale
             
             self.split_idx=split_idx
-            
                         
             if idx!=None:
                 self.len_idx = len(idx)
@@ -402,10 +402,7 @@ class RCI(SCI): #Real object interface
             self.input_dim = self.X.size(-1)
             self.indexes = idx if idx else columns_idx
             self.column_names = [ self.df.columns[i] for i in self.indexes ]
-            
-            
-            
-            
+        
             return Xtrain
         
     def compile(self,columns:tuple=None,idx:tuple=(3,1), optim:torch.optim = torch.optim.AdamW,loss:nn=nn.L1Loss, model:nn.Module = PINNd_p,lr:float=0.001) -> None:
