@@ -27,7 +27,7 @@ title: Hall effect thruster design via deep neural network for additive
 $U_d$ = discharge voltage  
 $P$ = discharge power  
 $T$ = thrust  
-$\dot{m}_a$ = mass flow rate  
+$m_a$ = mass flow rate  
 $I_{sp}$ = specific impulse  
 $\eta_m$ = mass utilization efficiency  
 $\eta_a$ = anode efficiency  
