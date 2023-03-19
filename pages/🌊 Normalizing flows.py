@@ -8,7 +8,7 @@ import streamlit as st
 
 st.markdown('## This is :orange[normalizing] flows approach to generating more data points, its most accurate and cheap method so far')
 def random_normal_samples(n, dim=2):
-    return torch.zeros(n, dim).normal_(mean=0, std=3)
+    return torch.zeros(n, dim).normal_(mean=0, std=1.5)
 
 
 st.markdown("""
