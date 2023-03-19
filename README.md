@@ -68,7 +68,10 @@ endgame design tool for HET.
 
 Note that neither of these models do not include cathode efficiencies
 and performances. So as the neutral gas thrust components. Most
-correlations in previous literature were made using assumption or
+correlations in previous literature were made using assumption or physics laws(Shagayda and Gorshkov 2013-03), in this paper the new
+method based on feature generation, GAN dataset augmentation and ML
+feature selection is suggested.
+
 
 
 
@@ -81,13 +84,7 @@ Normalizing flows can also be used for anomaly detection in sensor data. By lear
 
 Overall, normalizing flows provide a powerful tool for generating new samples of sensor or engineering data, as well as for analyzing and understanding the underlying distribution of the data.
 
+Full demo and docs: https://advpropsys.streamlit.app
 
 
 
-
-
-
-
-physics laws(Shagayda and Gorshkov 2013-03), in this paper the new
-method based on feature generation, GAN dataset augmentation and ML
-feature selection is suggested.
