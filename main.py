@@ -11,6 +11,7 @@ st.set_page_config(
 )
 
 st.title('HETfit_scientific')
+st.markdown('arXiv:2303.08227 [cs.LG]')
 st.markdown("#### Imagine a package which was engineered primarly for data driven plasma physics devices design, mainly low power hall effect thrusters, yup that's it"
             "\n### :orange[Don't be scared away though, it has much simpler interface than anything you ever used for such designs]")
 st.markdown('### Main concepts:')
