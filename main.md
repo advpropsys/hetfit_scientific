@@ -5,7 +5,6 @@
 - [PINN](#pinn)
 - [PINN.pinns](#pinnpinns)
   - [PINNd\_p Objects](#pinnd_p-objects)
-      - [forward](#forward)
   - [PINNhd\_ma Objects](#pinnhd_ma-objects)
   - [PINNT\_ma Objects](#pinnt_ma-objects)
 - [utils](#utils)
@@ -14,34 +13,24 @@
       - [get\_dataset](#get_dataset)
 - [utils.ndgan](#utilsndgan)
   - [DCGAN Objects](#dcgan-objects)
-      - [\_\_init\_\_](#__init__)
       - [define\_discriminator](#define_discriminator)
-      - [define\_generator](#define_generator)
-      - [build\_models](#build_models)
       - [generate\_latent\_points](#generate_latent_points)
-      - [generate\_fake\_samples](#generate_fake_samples)
       - [define\_gan](#define_gan)
       - [summarize\_performance](#summarize_performance)
       - [train\_gan](#train_gan)
-      - [start\_training](#start_training)
-      - [predict](#predict)
 - [utils.data\_augmentation](#utilsdata_augmentation)
   - [dataset Objects](#dataset-objects)
-      - [\_\_init\_\_](#__init__-1)
-      - [generate](#generate)
-- [:orange\[nets\]](#orangenets)
+      - [\_\_init\_\_](#__init__)
+- [nets](#nets)
 - [nets.envs](#netsenvs)
   - [SCI Objects](#sci-objects)
-      - [\_\_init\_\_](#__init__-2)
+      - [\_\_init\_\_](#__init__-1)
       - [feature\_gen](#feature_gen)
       - [feature\_importance](#feature_importance)
       - [data\_flow](#data_flow)
       - [init\_seed](#init_seed)
-      - [train\_epoch](#train_epoch)
       - [compile](#compile)
       - [train](#train)
-      - [save](#save)
-      - [onnx\_export](#onnx_export)
       - [jit\_export](#jit_export)
       - [inference](#inference)
       - [plot](#plot)
@@ -55,19 +44,48 @@
       - [performance](#performance-1)
 - [nets.dense](#netsdense)
   - [Net Objects](#net-objects)
+      - [\_\_init\_\_](#__init__-2)
+- [nets.normflows](#netsnormflows)
+  - [GaussianKDE Objects](#gaussiankde-objects)
       - [\_\_init\_\_](#__init__-3)
+      - [boundary\_distribution](#boundary_distribution)
+      - [sample](#sample)
+      - [score\_samples](#score_samples)
+  - [Parameters](#parameters)
+  - [Returns](#returns)
+      - [log\_prob](#log_prob)
+  - [Parameters](#parameters-1)
+  - [Returns](#returns-1)
+  - [Chi2KDE Objects](#chi2kde-objects)
+      - [\_\_init\_\_](#__init__-4)
+      - [sample](#sample-1)
+      - [score\_samples](#score_samples-1)
+  - [Parameters](#parameters-2)
+  - [Returns](#returns-2)
+      - [log\_prob](#log_prob-1)
+  - [Parameters](#parameters-3)
+  - [Returns](#returns-3)
+  - [PlanarFlow Objects](#planarflow-objects)
+      - [h\_prime](#h_prime)
+  - [NormalizingFlow Objects](#normalizingflow-objects)
+      - [\_\_init\_\_](#__init__-5)
+      - [sample](#sample-2)
+      - [forward](#forward)
+      - [random\_normal\_samples](#random_normal_samples)
+  - [nflow Objects](#nflow-objects)
+      - [\_\_init\_\_](#__init__-6)
+      - [compile](#compile-2)
+      - [train](#train-1)
+      - [performance](#performance-2)
 - [nets.design](#netsdesign)
       - [B\_field\_norm](#b_field_norm)
       - [PUdesign](#pudesign)
 - [nets.deep\_dense](#netsdeep_dense)
   - [dmodel Objects](#dmodel-objects)
-      - [\_\_init\_\_](#__init__-4)
+      - [\_\_init\_\_](#__init__-7)
 - [nets.opti](#netsopti)
 - [nets.opti.blackbox](#netsoptiblackbox)
   - [Hyper Objects](#hyper-objects)
-      - [\_\_init\_\_](#__init__-5)
-      - [define\_model](#define_model)
-      - [objective](#objective)
       - [start\_study](#start_study)
 
 <a id="main"></a>
@@ -91,25 +109,6 @@ class PINNd_p(nn.Module)
 ```
 
 $d \mapsto P$
-
-<a id="PINN.pinns.PINNd_p.forward"></a>
-
-#### forward
-
-```python
-def forward(x)
-```
-
-$P,U$ input, $d$ output
-
-**Arguments**:
-
-- `x` __type__ - _description_
-  
-
-**Returns**:
-
-- `_type_` - _description_
 
 <a id="PINN.pinns.PINNhd_ma"></a>
 
@@ -180,24 +179,6 @@ Gets augmented dataset
 class DCGAN()
 ```
 
-<a id="utils.ndgan.DCGAN.__init__"></a>
-
-#### \_\_init\_\_
-
-```python
-def __init__(latent, data)
-```
-
-The function takes in two arguments, the latent space dimension and the dataframe. It then sets
-
-the latent space dimension, the dataframe, the number of inputs and outputs, and then builds the
-models
-
-**Arguments**:
-
-- `latent`: The number of dimensions in the latent space
-- `data`: This is the dataframe that contains the data that we want to generate
-
 <a id="utils.ndgan.DCGAN.define_discriminator"></a>
 
 #### define\_discriminator
@@ -206,53 +187,7 @@ models
 def define_discriminator(inputs=8)
 ```
 
-The discriminator is a neural network that takes in a vector of length 8 and outputs a single
-
-value between 0 and 1
-
-**Arguments**:
-
-- `inputs`: number of features in the dataset, defaults to 8 (optional)
-
-**Returns**:
-
-The model is being returned.
-
-<a id="utils.ndgan.DCGAN.define_generator"></a>
-
-#### define\_generator
-
-```python
-def define_generator(latent_dim, outputs=8)
-```
-
-The function takes in a latent dimension and outputs and returns a model with two hidden layers
-
-and an output layer
-
-**Arguments**:
-
-- `latent_dim`: The dimension of the latent space, or the space that the generator will map
-to
-- `outputs`: the number of outputs of the generator, defaults to 8 (optional)
-
-**Returns**:
-
-The model is being returned.
-
-<a id="utils.ndgan.DCGAN.build_models"></a>
-
-#### build\_models
-
-```python
-def build_models()
-```
-
-The function returns the generator and discriminator models
-
-**Returns**:
-
-The generator and discriminator models are being returned.
+function to return the compiled discriminator model
 
 <a id="utils.ndgan.DCGAN.generate_latent_points"></a>
 
@@ -262,36 +197,7 @@ The generator and discriminator models are being returned.
 def generate_latent_points(latent_dim, n)
 ```
 
-> Generate random points in latent space as input for the generator
-
-**Arguments**:
-
-- `latent_dim`: the dimension of the latent space, which is the input to the generator
-- `n`: number of images to generate
-
-**Returns**:
-
-A numpy array of random numbers.
-
-<a id="utils.ndgan.DCGAN.generate_fake_samples"></a>
-
-#### generate\_fake\_samples
-
-```python
-def generate_fake_samples(generator, latent_dim, n)
-```
-
-It generates a batch of fake samples with class labels
-
-**Arguments**:
-
-- `generator`: The generator model that we will train
-- `latent_dim`: The dimension of the latent space, e.g. 100
-- `n`: The number of samples to generate
-
-**Returns**:
-
-x is the generated images and y is the labels for the generated images.
+generate points in latent space as input for the generator
 
 <a id="utils.ndgan.DCGAN.define_gan"></a>
 
@@ -301,27 +207,7 @@ x is the generated images and y is the labels for the generated images.
 def define_gan(generator, discriminator)
 ```
 
-The function takes in a generator and a discriminator, sets the discriminator to be untrainable,
-
-and then adds the generator and discriminator to a sequential model. The sequential model is then compiled with an optimizer and a loss function. 
-
-The optimizer is adam, which is a type of gradient descent algorithm. 
-
-Loss function is binary crossentropy, which is a loss function that is used for binary
-classification problems. 
-
-
-The function then returns the GAN.
-
-**Arguments**:
-
-- `generator`: The generator model
-- `discriminator`: The discriminator model that takes in a dataset and outputs a single value
-representing fake/real
-
-**Returns**:
-
-The model is being returned.
+define the combined generator and discriminator model
 
 <a id="utils.ndgan.DCGAN.summarize_performance"></a>
 
@@ -331,17 +217,7 @@ The model is being returned.
 def summarize_performance(epoch, generator, discriminator, latent_dim, n=200)
 ```
 
-> This function evaluates the discriminator on real and fake data, and plots the real and fake
-
-data
-
-**Arguments**:
-
-- `epoch`: the number of epochs to train for
-- `generator`: the generator model
-- `discriminator`: the discriminator model
-- `latent_dim`: The dimension of the latent space
-- `n`: number of samples to generate, defaults to 200 (optional)
+evaluate the discriminator and plot real and fake samples
 
 <a id="utils.ndgan.DCGAN.train_gan"></a>
 
@@ -357,48 +233,7 @@ def train_gan(g_model,
               batch_size=2)
 ```
 
-**Arguments**:
-
-- `g_model`: the generator model
-- `d_model`: The discriminator model
-- `gan_model`: The GAN model, which is the generator model combined with the discriminator
-model
-- `latent_dim`: The dimension of the latent space. This is the number of random numbers that
-the generator model will take as input
-- `num_epochs`: The number of epochs to train for, defaults to 2500 (optional)
-- `num_eval`: number of epochs to run before evaluating the model, defaults to 2500
-(optional)
-- `batch_size`: The number of samples to use for each gradient update, defaults to 2
-(optional)
-
-<a id="utils.ndgan.DCGAN.start_training"></a>
-
-#### start\_training
-
-```python
-def start_training()
-```
-
-The function takes the generator, discriminator, and gan models, and the latent vector as
-arguments, and then calls the train_gan function.
-
-<a id="utils.ndgan.DCGAN.predict"></a>
-
-#### predict
-
-```python
-def predict(n)
-```
-
-It takes the generator model and the latent space as input and returns a batch of fake samples
-
-**Arguments**:
-
-- `n`: the number of samples to generate
-
-**Returns**:
-
-the generated fake samples.
+function to train gan model
 
 <a id="utils.data_augmentation"></a>
 
@@ -425,6 +260,7 @@ def __init__(number_samples: int,
              boundary_conditions: list = None)
 ```
 
+Init
 
 **Arguments**:
 
@@ -433,33 +269,9 @@ def __init__(number_samples: int,
 - `source` _str_ - source file
 - `boundary_conditions` _list_ - y1,y2,x1,x2
 
-<a id="utils.data_augmentation.dataset.generate"></a>
-
-#### generate
-
-```python
-def generate()
-```
-
-The function takes in a dataframe, normalizes it, and then trains a DCGAN on it. 
-
-The DCGAN is a type of generative adversarial network (GAN) that is used to generate new data. 
-
-The DCGAN is trained on the normalized dataframe, and then the DCGAN is used to generate new
-data. 
-
-The new data is then concatenated with the original dataframe, and the new dataframe is saved as
-a pickle file. 
-
-The new dataframe is then returned.
-
-**Returns**:
-
-The dataframe is being returned.
-
 <a id="nets"></a>
 
-# :orange[nets]
+# nets
 
 <a id="nets.envs"></a>
 
@@ -496,11 +308,10 @@ def __init__(hidden_dim: int = 200,
              dataset: str = 'test.pkl',
              sample_size: int = 1000,
              source: str = 'dataset.csv',
-             boundary_conditions: list = None,
-             batch_size: int = 20)
+             boundary_conditions: list = None)
 ```
 
-
+Init
 
 **Arguments**:
 
@@ -511,7 +322,6 @@ def __init__(hidden_dim: int = 200,
 - `sample_size` _int, optional_ - Samples to be generated (note: BEFORE applying boundary conditions). Defaults to 1000.
 - `source` _str, optional_ - Source from which data will be generated. Better to not change. Defaults to 'dataset.csv'.
 - `boundary_conditions` _list, optional_ - If sepcified, whole dataset will be cut rectangulary. Input list is [ymin,ymax,xmin,xmax] type. Defaults to None.
-- `batch_size` _int, optional_ - Batch size for training.
 
 <a id="nets.envs.SCI.feature_gen"></a>
 
@@ -588,26 +398,7 @@ It is called automatically, don't call it in your code.
 def init_seed(seed)
 ```
 
-Initializes seed for torch - optional
-
-<a id="nets.envs.SCI.train_epoch"></a>
-
-#### train\_epoch
-
-```python
-def train_epoch(X, model, loss_function, optim)
-```
-
-Inner function of class - don't use.
-
-We iterate through the data, calculate the loss, backpropagate, and update the weights
-
-**Arguments**:
-
-- `X`: the training data
-- `model`: the model we're training
-- `loss_function`: the loss function to use
-- `optim`: the optimizer, which is the algorithm that will update the weights of the model
+Initializes seed for torch optional()
 
 <a id="nets.envs.SCI.compile"></a>
 
@@ -628,8 +419,8 @@ Builds model, loss, optimizer. Has defaults
 **Arguments**:
 
 - `columns` _tuple, optional_ - Columns to be selected for feature fitting. Defaults to (1,3,3,5).
-- `optim` - torch Optimizer. Default AdamW
-- `loss` - torch Loss function (nn). Defaults to L1Loss
+  optim - torch Optimizer. Default AdamW
+  loss - torch Loss function (nn). Defaults to L1Loss
 
 <a id="nets.envs.SCI.train"></a>
 
@@ -640,37 +431,9 @@ def train(epochs: int = 10) -> None
 ```
 
 Train model
-- If sklearn instance uses .fit()
+If sklearn instance uses .fit()
 
-- epochs (int,optional)
-
-<a id="nets.envs.SCI.save"></a>
-
-#### save
-
-```python
-def save(name: str = 'model.pt') -> None
-```
-
-> This function saves the model to a file
-
-**Arguments**:
-
-- `name` (`str (optional)`): The name of the file to save the model to, defaults to model.pt
-
-<a id="nets.envs.SCI.onnx_export"></a>
-
-#### onnx\_export
-
-```python
-def onnx_export(path: str = './models/model.onnx')
-```
-
-> We are exporting the model to the ONNX format, using the input data and the model itself
-
-**Arguments**:
-
-- `path` (`str (optional)`): The path to save the model to, defaults to ./models/model.onnx
+epochs - optional
 
 <a id="nets.envs.SCI.jit_export"></a>
 
@@ -712,9 +475,7 @@ Inference of (pre-)trained model
 def plot()
 ```
 
-> If the input and output dimensions are the same, plot the input and output as a scatter plot.
-If the input and output dimensions are different, plot the first dimension of the input and
-output as a scatter plot
+Automatic 2d plot
 
 <a id="nets.envs.SCI.plot3d"></a>
 
@@ -869,9 +630,7 @@ RCI performnace. APE errors.
 class Net(nn.Module)
 ```
 
-The Net class inherits from the nn.Module class, which has a number of attributes and methods (such
-as .parameters() and .zero_grad()) which we will be using. You can read more about the nn.Module
-class [here](https://pytorch.org/docs/stable/nn.html#torch.nn.Module)
+4 layer model, different activations and neurons count on layer
 
 <a id="nets.dense.Net.__init__"></a>
 
@@ -881,14 +640,378 @@ class [here](https://pytorch.org/docs/stable/nn.html#torch.nn.Module)
 def __init__(input_dim: int = 2, hidden_dim: int = 200)
 ```
 
-We create a neural network with two hidden layers, each with **hidden_dim** neurons, and a ReLU activation
-
-function. The output layer has one neuron and no activation function
+Init
 
 **Arguments**:
 
-- `input_dim` (`int (optional)`): The dimension of the input, defaults to 2
-- `hidden_dim` (`int (optional)`): The number of neurons in the hidden layer, defaults to 200
+- `input_dim` _int, optional_ - Defaults to 2.
+- `hidden_dim` _int, optional_ - Defaults to 200.
+
+<a id="nets.normflows"></a>
+
+# nets.normflows
+
+<a id="nets.normflows.GaussianKDE"></a>
+
+## GaussianKDE Objects
+
+```python
+class GaussianKDE(Distribution)
+```
+
+<a id="nets.normflows.GaussianKDE.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(X, bw)
+```
+
+X : tensor (n, d)
+  `n` points with `d` dimensions to which KDE will be fit
+bw : numeric
+  bandwidth for Gaussian kernel
+
+<a id="nets.normflows.GaussianKDE.boundary_distribution"></a>
+
+#### boundary\_distribution
+
+```python
+def boundary_distribution(x1)
+```
+
+The function boundary_distribution takes in a value x1 and returns a value y1
+
+**Arguments**:
+
+- `x1`: the x-coordinate of the point on the boundary
+
+**Returns**:
+
+the y1 value.
+
+<a id="nets.normflows.GaussianKDE.sample"></a>
+
+#### sample
+
+```python
+def sample(num_samples)
+```
+
+We are sampling from a normal distribution with mean equal to the data points in the dataset and
+
+standard deviation equal to the bandwidth
+
+**Arguments**:
+
+- `num_samples`: the number of samples to draw from the KDE
+
+**Returns**:
+
+A sample of size num_samples from the KDE.
+
+<a id="nets.normflows.GaussianKDE.score_samples"></a>
+
+#### score\_samples
+
+```python
+def score_samples(Y, X=None)
+```
+
+Returns the kernel density estimates of each point in `Y`.
+
+Parameters
+----------
+Y : tensor (m, d)
+  `m` points with `d` dimensions for which the probability density will
+  be calculated
+X : tensor (n, d), optional
+  `n` points with `d` dimensions to which KDE will be fit. Provided to
+  allow batch calculations in `log_prob`. By default, `X` is None and
+  all points used to initialize KernelDensityEstimator are included.
+
+
+Returns
+-------
+log_probs : tensor (m)
+  log probability densities for each of the queried points in `Y`
+
+<a id="nets.normflows.GaussianKDE.log_prob"></a>
+
+#### log\_prob
+
+```python
+def log_prob(Y)
+```
+
+Returns the total log probability of one or more points, `Y`, using
+a Multivariate Normal kernel fit to `X` and scaled using `bw`.
+
+Parameters
+----------
+Y : tensor (m, d)
+  `m` points with `d` dimensions for which the probability density will
+  be calculated
+
+Returns
+-------
+log_prob : numeric
+  total log probability density for the queried points, `Y`
+
+<a id="nets.normflows.Chi2KDE"></a>
+
+## Chi2KDE Objects
+
+```python
+class Chi2KDE(Distribution)
+```
+
+<a id="nets.normflows.Chi2KDE.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(X, bw)
+```
+
+X : tensor (n, d)
+  `n` points with `d` dimensions to which KDE will be fit
+bw : numeric
+  bandwidth for Gaussian kernel
+
+<a id="nets.normflows.Chi2KDE.sample"></a>
+
+#### sample
+
+```python
+def sample(num_samples)
+```
+
+We are sampling from a log-normal distribution with a mean of the data points and a standard
+
+deviation of the bandwidth
+
+**Arguments**:
+
+- `num_samples`: the number of samples to draw from the KDE
+
+**Returns**:
+
+A sample of size num_samples from the KDE.
+
+<a id="nets.normflows.Chi2KDE.score_samples"></a>
+
+#### score\_samples
+
+```python
+def score_samples(Y, X=None)
+```
+
+Returns the kernel density estimates of each point in `Y`.
+
+Parameters
+----------
+Y : tensor (m, d)
+  `m` points with `d` dimensions for which the probability density will
+  be calculated
+X : tensor (n, d), optional
+  `n` points with `d` dimensions to which KDE will be fit. Provided to
+  allow batch calculations in `log_prob`. By default, `X` is None and
+  all points used to initialize KernelDensityEstimator are included.
+
+
+Returns
+-------
+log_probs : tensor (m)
+  log probability densities for each of the queried points in `Y`
+
+<a id="nets.normflows.Chi2KDE.log_prob"></a>
+
+#### log\_prob
+
+```python
+def log_prob(Y)
+```
+
+Returns the total log probability of one or more points, `Y`, using
+a Multivariate Normal kernel fit to `X` and scaled using `bw`.
+
+Parameters
+----------
+Y : tensor (m, d)
+  `m` points with `d` dimensions for which the probability density will
+  be calculated
+
+Returns
+-------
+log_prob : numeric
+  total log probability density for the queried points, `Y`
+
+<a id="nets.normflows.PlanarFlow"></a>
+
+## PlanarFlow Objects
+
+```python
+class PlanarFlow(nn.Module)
+```
+
+A single planar flow, computes T(x) and log(det(jac_T)))
+
+<a id="nets.normflows.PlanarFlow.h_prime"></a>
+
+#### h\_prime
+
+```python
+def h_prime(x)
+```
+
+Derivative of tanh
+
+<a id="nets.normflows.NormalizingFlow"></a>
+
+## NormalizingFlow Objects
+
+```python
+class NormalizingFlow(nn.Module)
+```
+
+A normalizng flow composed of a sequence of planar flows.
+
+<a id="nets.normflows.NormalizingFlow.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(D, n_flows=2)
+```
+
+The function takes in two arguments, D and n_flows. D is the dimension of the data, and n_flows
+
+is the number of flows. The function then creates a list of PlanarFlow objects, where the number
+of PlanarFlow objects is equal to n_flows
+
+**Arguments**:
+
+- `D`: the dimensionality of the data
+- `n_flows`: number of flows to use, defaults to 2 (optional)
+
+<a id="nets.normflows.NormalizingFlow.sample"></a>
+
+#### sample
+
+```python
+def sample(base_samples)
+```
+
+Transform samples from a simple base distribution
+by passing them through a sequence of Planar flows.
+
+<a id="nets.normflows.NormalizingFlow.forward"></a>
+
+#### forward
+
+```python
+def forward(x)
+```
+
+Computes and returns the sum of log_det_jacobians
+and the transformed samples T(x).
+
+<a id="nets.normflows.random_normal_samples"></a>
+
+#### random\_normal\_samples
+
+```python
+def random_normal_samples(n, dim=2)
+```
+
+It returns a tensor of size `n` by `dim` with random samples from a normal distribution with mean 0
+
+and standard deviation 1.5
+
+**Arguments**:
+
+- `n`: number of samples
+- `dim`: the dimension of the space we're sampling from, defaults to 2 (optional)
+
+**Returns**:
+
+A tensor of size n x dim with random normal samples.
+
+<a id="nets.normflows.nflow"></a>
+
+## nflow Objects
+
+```python
+class nflow()
+```
+
+<a id="nets.normflows.nflow.__init__"></a>
+
+#### \_\_init\_\_
+
+```python
+def __init__(dim=2, latent=16, batchsize: int = 1, dataset=None)
+```
+
+The function __init__ initializes the class NormalizingFlowModel with the parameters dim,
+
+latent, batchsize, and datasetPath
+
+**Arguments**:
+
+- `dim`: The dimension of the data, defaults to 2 (optional)
+- `latent`: The number of latent variables in the model, defaults to 16 (optional)
+- `batchsize` (`int (optional)`): The number of samples to generate at a time, defaults to 1
+- `datasetPath` (`str (optional)`): The path to the dataset, defaults to data/dataset.csv
+
+<a id="nets.normflows.nflow.compile"></a>
+
+#### compile
+
+```python
+def compile(optim: torch.optim = torch.optim.Adam,
+            distribution: str = 'GaussianKDE',
+            lr: float = 0.00015,
+            bw: float = 0.1,
+            wd=0.0015)
+```
+
+It takes in a dataset, a model, and a distribution, and returns a compiled model
+
+**Arguments**:
+
+- `optim` (`torch.optim`): the optimizer to use
+- `distribution` (`str (optional)`): the type of distribution to use, defaults to GaussianKDE
+- `lr` (`float`): learning rate
+- `bw` (`float`): bandwidth for the KDE
+
+<a id="nets.normflows.nflow.train"></a>
+
+#### train
+
+```python
+def train(iters: int = 1000)
+```
+
+> We sample from a normal distribution, pass the samples through the model, and then calculate
+
+the loss
+
+**Arguments**:
+
+- `iters` (`int (optional)`): number of iterations to train for, defaults to 1000
+
+<a id="nets.normflows.nflow.performance"></a>
+
+#### performance
+
+```python
+def performance()
+```
+
+The function takes the model and the scaled data as inputs, samples from the model, and then
+prints the r2 score of the samples and the scaled data.
 
 <a id="nets.design"></a>
 
@@ -942,6 +1065,8 @@ Computes design via numerical model, uses fits from PINNs
 class dmodel(nn.Module)
 ```
 
+4 layers Torch model. Relu activations, hidden layers are same size.
+
 <a id="nets.deep_dense.dmodel.__init__"></a>
 
 #### \_\_init\_\_
@@ -950,15 +1075,13 @@ class dmodel(nn.Module)
 def __init__(in_features=1, hidden_features=200, out_features=1)
 ```
 
-We're creating a neural network with 4 layers, each with 200 neurons. The first layer takes in the input, the second layer takes in the output of the first layer, the third layer takes in the
-output of the second layer, and the fourth layer takes in the output of the third layer
+Init
 
 **Arguments**:
 
-- `in_features`: The number of input features, defaults to 1 (optional)
-- `hidden_features`: the number of neurons in the hidden layers, defaults to 200 (optional)
-- `out_features`: The number of classes for classification (1 for regression), defaults to 1
-(optional)
+- `in_features` _int, optional_ - Input features. Defaults to 1.
+- `hidden_features` _int, optional_ - Hidden dims. Defaults to 200.
+- `out_features` _int, optional_ - Output dims. Defaults to 1.
 
 <a id="nets.opti"></a>
 
@@ -977,65 +1100,6 @@ class Hyper(SCI)
 ```
 
 Hyper parameter tunning class. Allows to generate best NN architecture for task. Inputs are column indexes. idx[-1] is targeted value.
-Based on OPTUNA algorithms it is very fast and reliable. Outputs are NN parameters in json. Optionally full report for every trial is available at the neptune.ai
-
-<a id="nets.opti.blackbox.Hyper.__init__"></a>
-
-#### \_\_init\_\_
-
-```python
-def __init__(idx: tuple = (1, 3, 7), *args, **kwargs)
-```
-
-The function __init__() is a constructor that initializes the class Hyper
-
-**Arguments**:
-
-- `idx` (`tuple`): tuple of integers, the indices of the data to be loaded
-
-<a id="nets.opti.blackbox.Hyper.define_model"></a>
-
-#### define\_model
-
-```python
-def define_model(trial)
-```
-
-We define a function that takes in a trial object and returns a neural network with the number
-
-of layers, hidden units and activation functions defined by the trial object.
-
-**Arguments**:
-
-- `trial`: This is an object that contains the information about the current trial
-
-**Returns**:
-
-A sequential model with the number of layers, hidden units and activation functions
-defined by the trial.
-
-<a id="nets.opti.blackbox.Hyper.objective"></a>
-
-#### objective
-
-```python
-def objective(trial)
-```
-
-We define a model, an optimizer, and a loss function. We then train the model for a number of
-
-epochs, and report the loss at the end of each epoch
-
-*"optimizer": ["Adam", "RMSprop", "SGD" 'AdamW','Adamax','Adagrad']*
-*"lr" $\in$ [1e-7,1e-3], log=True*
-
-**Arguments**:
-
-- `trial`: The trial object that is passed to the objective function
-
-**Returns**:
-
-The accuracy of the model.
 
 <a id="nets.opti.blackbox.Hyper.start_study"></a>
 
@@ -1047,14 +1111,16 @@ def start_study(n_trials: int = 100,
                 neptune_api: str = None)
 ```
 
-It takes a number of trials, a neptune project name and a neptune api token as input and runs
-
-the objective function on the number of trials specified. If the neptune project and api token
-are provided, it logs the results to neptune
+Starts study. Optionally provide your neptune repo and token for report generation.
 
 **Arguments**:
 
-- `n_trials` (`int (optional)`): The number of trials to run, defaults to 100
-- `neptune_project` (`str`): the name of the neptune project you want to log to
-- `neptune_api` (`str`): your neptune api key
+- `n_trials` _int, optional_ - Number of iterations. Defaults to 100.
+- `neptune_project` _str, optional_ - . Defaults to None.
+  neptune_api (str, optional):. Defaults to None.
+  
+
+**Returns**:
+
+- `dict` - quick report of results
 
