@@ -6,7 +6,7 @@ import pandas as pd
 
 
 
-def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl',source:str='dataset.csv',boundary_conditions:list=None) -> _pickle:
+def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl',source:str='dataset.csv',boundary_conditions:list=None) -> pickle:
     """ Gets augmented dataset
 
     Args:
