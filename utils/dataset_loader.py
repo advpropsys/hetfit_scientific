@@ -6,7 +6,7 @@ import pandas as pd
 
 
 
-def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl',source:str='dataset.csv',boundary_conditions:list=None) -> pickle:
+def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl',source:str='dataset.csv',boundary_conditions:list=None) -> pd.DataFrame:
     """ Gets augmented dataset
 
     Args:
@@ -23,7 +23,7 @@ def get_dataset(raw:bool=False, sample_size:int=1000, name:str='dataset.pkl',sou
             ldat = dataset(sample_size,name,source,boundary_conditions)
             ldat.generate()
         with open(f"./data/{name}", "rb") as input_file:
-            buffer = pickle.load(input_file)
+            buffer = pd.read_pickle(input_file)
     else:
         with open(f"./data/{source}", "rb") as input_file:
             buffer = pd.read_csv(input_file)
